@@ -33,12 +33,31 @@ export default function Login() {
 
   }
 
+  const handleGoogle = async () => {
+    try {
+      const value = await signIn("google")
+
+      if (value?.error) {
+        console.log("google success")
+      } else {
+        console.log("failed")
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input type="email"  {...register("email")} />
-      <input type="password" {...register("password", { required: true })} />
-      {errors.password && <span>This field is required</span>}
-      <input type="submit" />
-    </form>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <input type="email"  {...register("email")} />
+        <input type="password" {...register("password", { required: true })} />
+        {errors.password && <span>This field is required</span>}
+        <input type="submit" />
+      </form>
+
+      <button onClick={handleGoogle}>Google</button>
+    </div>
   );
 }

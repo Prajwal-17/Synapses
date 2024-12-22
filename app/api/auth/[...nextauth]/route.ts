@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt"
   },
   pages: {
-    signIn: "/auth/login"
+    signIn: "/auth/login",
   },
   providers: [
     GithubProvider({
@@ -33,36 +33,31 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
 
-        if (!credentials?.email || !credentials.password) {
+        if (!credentials?.email || !credentials?.password) {
           throw new Error("All fields are required")
         }
 
-        try {
-          const user = await prisma.user.findFirst({
-            where: {
-              email: credentials.email,
-            }
-          })
-
-          if (!user) {
-            throw new Error("User does not exist")
+        const user = await prisma.user.findFirst({
+          where: {
+            email: credentials.email,
           }
+        })
 
-          const isPassword = bcrypt.compare(credentials.password, user.password)
-
-          if (!isPassword) {
-            throw new Error("Password is incorrect")
-          }
-
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          }
-        } catch (error) {
-          console.log(error)
+        if (!user || !user.password) {
+          throw new Error("User does not exist")
         }
-        return null
+
+        const isPassword = bcrypt.compare(credentials.password, user.password)
+
+        if (!isPassword) {
+          throw new Error("Password is incorrect")
+        }
+
+        return {
+          id: String(user.id),
+          name: user.name,
+          email: user.email,
+        }
       }
     })
   ],
