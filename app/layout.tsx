@@ -5,6 +5,7 @@ import { authOptions } from "./api/auth/[...nextauth]/route";
 import SessionProviderWrapper from "../providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
+import { Navbar } from "@/components/navbar/Navbar";
 
 const dm_sans = DM_Sans({
   variable: "--font-dm-sans",
@@ -32,6 +33,7 @@ export default async function RootLayout({
       >
         <SessionProviderWrapper session={session}>
           <ThemeProvider attribute="class" defaultTheme="dark">
+            <Navbar />
             {children}
           </ThemeProvider>
         </SessionProviderWrapper>
