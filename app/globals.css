@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
     --foreground: #040316;
@@ -23,8 +19,8 @@ body {
   }
 }
 
-@layer base{
-  body{
-     @apply bg-background text-foreground
+@layer base {
+  body {
+    @apply bg-background text-foreground;
   }
 }

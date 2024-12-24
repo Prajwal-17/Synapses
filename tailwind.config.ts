@@ -16,7 +16,9 @@ export default {
 				'secondary': 'var(--secondary)',
 				'accent': 'var(--accent)',
 			},
-
+			fontFamily: {
+				dm_sans: ["var(--font-dm-sans)", "sans-serif"]
+			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
