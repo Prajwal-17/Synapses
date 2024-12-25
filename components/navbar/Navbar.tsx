@@ -12,12 +12,12 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-5 md:px-7 py-2 ">
+      <nav className="flex items-center justify-between px-3 md:px-5 py-2 ">
         <div className="flex items-center">
           <button className="text-center hover:cursor-pointer">
             <Menu />
           </button>
-          <Link href="/" className="text-2xl md:text-3xl  font-bold mx-5 hover:cursor-pointer">
+          <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
             HyperPipe
           </Link>
         </div>
