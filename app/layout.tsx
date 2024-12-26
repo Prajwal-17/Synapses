@@ -6,7 +6,7 @@ import SessionProviderWrapper from "../providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
 import NavbarWrapper from "@/providers/NavbarWrapper";
-import { Sidebar } from "@/components/sidebar/Sidebar";
+import SidebarWarpper from "@/providers/SidebarWrapper";
 
 const dm_sans = DM_Sans({
   variable: "--font-dm-sans",
@@ -36,7 +36,7 @@ export default async function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark">
             <NavbarWrapper />
             <div className="flex">
-              <Sidebar />
+              <SidebarWarpper />
               {children}
             </div>
           </ThemeProvider>

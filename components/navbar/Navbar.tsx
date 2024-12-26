@@ -5,16 +5,18 @@ import { Menu, MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
 import { DropDown } from "./Dropdown"
+import { useSidebarStore } from "@/store/sidebarStore"
 
 export const Navbar = () => {
 
   const { theme, setTheme } = useTheme()
+  const toggleSidebar = useSidebarStore((state) => state.toggleSidebar)
 
   return (
     <>
       <nav className="flex items-center justify-between px-3 md:px-5 py-2 ">
         <div className="flex items-center">
-          <button className="text-center hover:cursor-pointer">
+          <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
             <Menu />
           </button>
           <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
