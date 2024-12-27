@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/route";
 import SessionProviderWrapper from "../providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
 import NavbarWrapper from "@/providers/NavbarWrapper";
 import SidebarWarpper from "@/providers/SidebarWrapper";
+import { Toaster } from "@/components/ui/sonner"
+import { authOptions } from "@/lib/authOptions";
 
 const dm_sans = DM_Sans({
   variable: "--font-dm-sans",
@@ -38,6 +39,7 @@ export default async function RootLayout({
             <div className="flex">
               <SidebarWarpper />
               {children}
+              <Toaster />
             </div>
           </ThemeProvider>
         </SessionProviderWrapper>
