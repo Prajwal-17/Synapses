@@ -110,7 +110,7 @@ export default function Login() {
                 placeholder="Enter your email"
                 className="w-full px-2 py-3 font-medium border-[1px] border-slate-700 rounded-lg"
                 type="email"
-                {...register("email")}
+                {...register("email", { required: true })}
               />
             </div>
             <div>
