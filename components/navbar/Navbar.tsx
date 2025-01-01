@@ -19,7 +19,7 @@ export const Navbar = () => {
       <nav className="flex items-center justify-between px-3 md:px-5 py-2 ">
         <div className="flex items-center">
           {
-            pathname == "/home" &&
+            pathname !== "/" &&
             <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
               <Menu />
             </button>
