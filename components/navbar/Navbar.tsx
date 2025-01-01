@@ -16,39 +16,42 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="flex items-center justify-between px-3 md:px-5 py-2 ">
-        <div className="flex items-center">
-          {
-            pathname !== "/" &&
-            <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
-              <Menu />
-            </button>
-          }
-          <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
-            HyperPipe
-          </Link>
-        </div>
+      <nav className="text-black bg-white dark:bg-background dark:text-white h-16 fixed top-0 right-0 left-0 z-50">
+        <div className="flex items-center justify-between px-3 md:px-5 py-2">
 
-        <div className="flex gap-3">
-          <div className=" p-2 rounded-md hover:cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center">
+          <div className="flex items-center">
             {
-              theme == "dark" || theme == "system" ? (
-                < button >
-                  <MoonStar onClick={() => { setTheme("light") }} className="size-5 md:size-6" />
-                </button>
-              ) : (
-                <button>
-                  <Sun onClick={() => { setTheme("dark") }} className="size-5 md:size-6" />
-                </button>
-              )
+              pathname !== "/" &&
+              <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
+                <Menu />
+              </button>
             }
+            <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
+              HyperPipe
+            </Link>
           </div>
-          <div className="hover:cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md p-2">
-            <DropDown />
+
+          <div className="flex gap-3">
+            <div className=" p-2 rounded-md hover:cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center">
+              {
+                theme == "dark" || theme == "system" ? (
+                  < button >
+                    <MoonStar onClick={() => { setTheme("light") }} className="size-5 md:size-6" />
+                  </button>
+                ) : (
+                  <button>
+                    <Sun onClick={() => { setTheme("dark") }} className="size-5 md:size-6" />
+                  </button>
+                )
+              }
+            </div>
+            <div className="hover:cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md p-2">
+              <DropDown />
+            </div>
           </div>
         </div>
+        <Separator orientation="horizontal" className="w-full h-[1px] bg-gray-200 dark:bg-gray-700" />
       </nav >
-      <Separator orientation="horizontal" className="w-full h-[1px] bg-gray-200 dark:bg-gray-700" />
     </>
   )
 }

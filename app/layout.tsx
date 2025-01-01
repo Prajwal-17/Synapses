@@ -35,14 +35,18 @@ export default async function RootLayout({
       >
         <SessionProviderWrapper session={session}>
           <ThemeProvider attribute="class" defaultTheme="dark">
-            <NavbarWrapper />
-            <div className="flex">
-              <SidebarWarpper />
-              <div className="flex-1">
-                {children}
+            <div className="min-h-screen">
+              <NavbarWrapper />
+              <div>
+                <div className="flex">
+                  <SidebarWarpper />
+                  <main className="flex-1 mt-16 ml-14 px-2">
+                    {children}
+                  </main>
+                </div>
               </div>
-              <Toaster />
             </div>
+            <Toaster />
           </ThemeProvider>
         </SessionProviderWrapper>
       </body>
