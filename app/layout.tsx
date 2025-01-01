@@ -38,7 +38,9 @@ export default async function RootLayout({
             <NavbarWrapper />
             <div className="flex">
               <SidebarWarpper />
-              {children}
+              <div className="flex-1">
+                {children}
+              </div>
               <Toaster />
             </div>
           </ThemeProvider>

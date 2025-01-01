@@ -7,7 +7,7 @@ export default function SidebarWarpper() {
 
   const pathname = usePathname();
 
-  if (pathname == "/home") {
+  if (pathname !== "/") {
     return <Sidebar />
   }
 
