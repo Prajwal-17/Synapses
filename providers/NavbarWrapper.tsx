@@ -5,8 +5,9 @@ import { usePathname } from "next/navigation"
 
 export default function NavbarWrapper() {
   const pathname = usePathname();
+  const excludedPaths = ["/"]
 
-  if (pathname !== "/") {
+  if (!excludedPaths.includes(pathname)) {
     return <Navbar />
   } else {
     return null

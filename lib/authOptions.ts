@@ -24,7 +24,15 @@ export const authOptions: NextAuthOptions = {
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      //authorization => optional for user login
+      authorization: {
+        params: {
+          // Scope Reference => https://developers.google.com/identity/protocols/oauth2/scopes#google-sign-in
+          scope: "openid profile email",
+          prompt: 'consent',
+        }
+      }
     }),
     CredentialsProvider({
       name: "credentials",
@@ -63,15 +71,13 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    jwt: ({ token, user }) => {
-
-      if (user) {
-        return {
-          ...token,
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        }
+    jwt: ({ token, user, account }) => {
+      if (account) {
+        token.accessToken = account.access_token as string | undefined;
+        token.refreshToken = account.refresh_token as string | undefined;
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
       }
 
       return token
@@ -84,6 +90,8 @@ export const authOptions: NextAuthOptions = {
           name: token.name,
           email: token.email,
         }
+        session.accessToken = token.accessToken as string;
+        session.refreshToken = token.refreshToken as string;
       }
 
       return session

@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(uuid())
   name          String
   email         String    @unique
   password      String?
@@ -16,15 +16,16 @@ model User {
   image         String?
   accounts      Account[]
 
-  pipes Pipe[]
+  workflows       Workflow[]
+  gmailConnection GmailConnection?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Account {
-  id                Int     @id @default(autoincrement())
-  userId            Int
+  id                String  @id @default(uuid())
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -44,25 +45,57 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Pipe {
-  id     String @id @default(uuid())
-  userId Int
+model Workflow {
+  id               String   @id @default(uuid())
+  userId           String
+  totalActionSteps Int
+  triggerId        String?  @unique
+  actions          Action[]
 
   user    User     @relation(fields: [userId], references: [id])
-  trigger Trigger?
+  Trigger Trigger?
+
+  createdAt DateTime @default(now())
 }
 
 model Trigger {
-  id     String @id @default(uuid())
-  pipeId String @unique
+  id         String   @id @default(uuid())
+  workflowId String
+  appType    String
+  config     Json
+  actions    Action[]
 
-  actions Action[]
-  pipe    Pipe      @relation(fields: [pipeId], references: [id])
+  workflow Workflow @relation(fields: [id], references: [triggerId]) // Key change here
+
+  createdAt DateTime @default(now())
 }
 
 model Action {
-  id        String @id @default(uuid())
-  triggerId String
+  id         String @id @default(uuid())
+  triggerId  String
+  workflowId String
+  appType    String
+  config     Json
+  stepNo     Int
 
-  trigger Trigger @relation(fields: [triggerId],references: [id])
+  trigger  Trigger   @relation(fields: [triggerId], references: [id])
+  Workflow Workflow? @relation(fields: [workflowId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model GmailConnection {
+  id           String @id @default(uuid())
+  userId       String @unique
+  gmail        String
+  accessToken  String
+  refreshToken String
+  tokenType    String
+  id_token     String
+  tokenExpiry  BigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 }
