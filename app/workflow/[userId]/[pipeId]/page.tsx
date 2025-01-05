@@ -1,3 +1,5 @@
+"use client"
+
 import FlowComponent from "@/components/workflow-editor/FlowComponent";
 
 export default function Editor() {

@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    return NextResponse.redirect("http://localhost:3000/pipeflow/slfkjsf/sdflsjdf");
+    return NextResponse.redirect("http://localhost:3000/workflow/slfkjsf/sdflsjdf");
   } catch (error) {
     console.log("Failed to exchange code for tokens:", error);
     return NextResponse.json({ error: "Failed to exchange code for tokens", details: error }, { status: 500 });
