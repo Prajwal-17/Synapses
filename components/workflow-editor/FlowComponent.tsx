@@ -4,20 +4,20 @@ import React, { useEffect } from 'react';
 import { ReactFlowProvider, ReactFlow, Background, BackgroundVariant, Position, useNodesState, MiniMap, useEdgesState, Handle } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import TriggerNode from './TriggerNode';
-import { PlaceholderNode } from '../placeholder-node';
+import { PlaceholderNode } from './placeholder-node';
+import ActionNode from './ActionNode';
 
-const nodeTypes = {
+export const nodeTypes = {
   triggerNode: TriggerNode,
   placeholderNode: PlaceholderNode,
+  actionNode: ActionNode,
 }
 
 const FlowComponent = () => {
 
   const initialNodes = [
     { id: '1', position: { x: 0, y: 0 }, data: { label: 'Node 1' }, type: "triggerNode" },
-    { id: '2', position: { x: 250, y: 5 }, data: { label: 'Node 2' }, type: "placeholderNode" },
-    // { id: "3", position: { x: 0, y: 100 }, data: { label: "trigger node" }, type: "triggerNode" },
-    // { id: "4", position: { x: 450, y: 300 }, data: { label: "placeholder node" }, type: "placeholderNode" }
+    { id: '2', position: { x: 0, y: 100 }, data: { label: 'Node 2' }, type: "placeholderNode" },
   ];
   const initialEdges = [
     { id: 'e1-2', source: '1', target: '2' }
@@ -46,10 +46,10 @@ const FlowComponent = () => {
       <button onClick={addNode} className='absolute'>click me</button>
       <ReactFlowProvider>
         <ReactFlow
-          defaultNodes={nodes}
+          defaultNodes={initialNodes}
           nodes={nodes}
-          defaultEdges={edges}
-          edges={initialEdges}
+          defaultEdges={initialEdges}
+          edges={edges}
           nodeTypes={nodeTypes}
           fitView
           style={{ width: '100%', height: '100%' }}
