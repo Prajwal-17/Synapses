@@ -1,8 +1,15 @@
 "use client"
 
 import React from "react";
-import { useReactFlow, Handle, Position, NodeProps, Node, getEdgeCenter } from "@xyflow/react";
-import { BaseNode } from "@/components/workflow-editor/base-node"
+import {
+  useReactFlow,
+  Handle,
+  Position,
+  NodeProps,
+  Node
+} from "@xyflow/react";
+import { BaseNode } from "@/components/workflow-editor/Base-node"
+import { IconCircleDashedPlus } from "@tabler/icons-react";
 
 type PlaceholderNodeData = Node<{
   label: string;
@@ -10,7 +17,7 @@ type PlaceholderNodeData = Node<{
 
 export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNodeData>) {
 
-  const { setNodes, setEdges, getNodes, getEdges } = useReactFlow();
+  const { setNodes, setEdges, getNodes } = useReactFlow();
 
   const handleClick = () => {
 
@@ -26,7 +33,7 @@ export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNod
             y: nodes[nodes.length - 1].position.y + 100
           },
           data: {
-            label: 'new node'
+            label: <IconCircleDashedPlus stroke={2} />
           },
           type: "actionNode"
         },
@@ -37,7 +44,7 @@ export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNod
             y: nodes[nodes.length - 1].position.y + 200,
           },
           data: {
-            label: "+ action node"
+            label: <IconCircleDashedPlus stroke={2} />
           },
           type: "placeholderNode"
         }
@@ -58,16 +65,13 @@ export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNod
         }
       ]
     })
-
-    console.log("nodes", getNodes())
-    console.log("edges", getEdges())
   };
 
   return (
     <BaseNode
       id={id}
       selected={selected}
-      className="bg-card text-center w-[130px] border-dashed border-gray-400 text-gray-400 shadow-none p-2"
+      className="bg-card text-center w-64 h-14 border-dashed border-gray-400 text-gray-400 shadow-none p-2 flex justify-center items-center bg-white dark:bg-[#242423]"
       onClick={handleClick}
     >
       {data.label}
