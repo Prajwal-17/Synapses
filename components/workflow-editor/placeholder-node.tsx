@@ -65,6 +65,8 @@ export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNod
         }
       ]
     })
+
+    // console.log(nodes)
   };
 
   return (

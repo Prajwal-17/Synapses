@@ -15,6 +15,7 @@ import TriggerNode from './TriggerNode';
 import ActionNode from './ActionNode';
 import { PlaceholderNode } from './Placeholder-node';
 import { IconCircleDashedPlus } from '@tabler/icons-react';
+import SetupPanel from './SetupPanel';
 
 export const nodeTypes = {
   triggerNode: TriggerNode,
@@ -55,7 +56,7 @@ const FlowComponent = () => {
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
 
-  return (
+  return (<>
     <div className='w-full h-full'>
       <ReactFlowProvider>
         <ReactFlow
@@ -66,13 +67,15 @@ const FlowComponent = () => {
           nodeTypes={nodeTypes}
           fitView
           style={{ width: '100%', height: '100%' }}
+          proOptions={{ hideAttribution: true }}
         >
-          <MiniMap />
+          {/* <MiniMap /> */}
           <Controls />
           <Background variant={BackgroundVariant.Cross} gap={40} />
         </ReactFlow>
       </ReactFlowProvider>
     </div>
+  </>
   );
 };
 
