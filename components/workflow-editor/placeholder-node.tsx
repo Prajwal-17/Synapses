@@ -10,6 +10,8 @@ import {
 } from "@xyflow/react";
 import { BaseNode } from "@/components/workflow-editor/Base-node"
 import { IconCircleDashedPlus } from "@tabler/icons-react";
+import { usePanelDetails } from "@/store/panelStore";
+import { useSelectNodeStore } from "@/store/selectNodeStore";
 
 type PlaceholderNodeData = Node<{
   label: string;
@@ -18,6 +20,11 @@ type PlaceholderNodeData = Node<{
 export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNodeData>) {
 
   const { setNodes, setEdges, getNodes } = useReactFlow();
+  const nodeData = usePanelDetails((state) => state.nodeData)
+  const setNodeData = usePanelDetails((state) => state.setNodeData)
+  const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
+  const setPanel = useSelectNodeStore((state) => state.setPanel)
+  const panel = useSelectNodeStore((state) => state.panel)
 
   const handleClick = () => {
 
@@ -64,7 +71,20 @@ export function PlaceholderNode({ data, id, selected }: NodeProps<PlaceholderNod
           target: `${Number(lastActionNode.id) + 1}`
         }
       ]
-    })
+    });
+
+
+    setNodeData("")
+    setSelectedNode(getNodes().length)
+
+    if (!panel) {
+      setPanel()
+    }
+
+    // setNodeData((prev)=>{
+
+    // })
+
 
     // console.log(nodes)
   };

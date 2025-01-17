@@ -65,7 +65,7 @@ model Trigger {
   config     Json
   actions    Action[]
 
-  workflow Workflow @relation(fields: [id], references: [triggerId]) // Key change here
+  workflow Workflow @relation(fields: [id], references: [triggerId])
 
   createdAt DateTime @default(now())
 }
