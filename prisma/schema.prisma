@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+
+  workflows       Workflow[]
+  gmailConnection GmailConnection?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Workflow {
+  id               String   @id @default(uuid())
+  userId           String
+  totalActionSteps Int
+  triggerId        String?  @unique
+  actions          Action[]
+
+  user    User     @relation(fields: [userId], references: [id])
+  Trigger Trigger?
+
+  createdAt DateTime @default(now())
+}
+
+model Trigger {
+  id         String   @id @default(uuid())
+  workflowId String
+  appType    String
+  config     Json
+  actions    Action[]
+
+  workflow Workflow @relation(fields: [id], references: [triggerId])
+
+  createdAt DateTime @default(now())
+}
+
+model Action {
+  id         String @id @default(uuid())
+  triggerId  String
+  workflowId String
+  appType    String
+  config     Json
+  stepNo     Int
+
+  trigger  Trigger   @relation(fields: [triggerId], references: [id])
+  Workflow Workflow? @relation(fields: [workflowId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model GmailConnection {
+  id           String @id @default(uuid())
+  userId       String @unique
+  gmail        String
+  accessToken  String
+  refreshToken String
+  tokenType    String
+  id_token     String
+  tokenExpiry  BigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
