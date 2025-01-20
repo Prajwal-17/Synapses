@@ -1,7 +1,7 @@
 "use client"
 
-import FlowComponent from "@/components/workflow-editor/FlowComponent";
-import SetupPanel from "@/components/workflow-editor/SetupPanel";
+import FlowComponent from "@/components/workflow-editor/nodes/FlowComponent";
+import SetupPanel from "@/components/workflow-editor/setup-panel/SetupPanel";
 
 export default function Editor() {
   return (<>

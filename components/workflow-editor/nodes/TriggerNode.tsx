@@ -5,10 +5,7 @@ import {
   Handle,
   Position
 } from "@xyflow/react";
-import Image from "next/image";
-import Gmail from "@/public/gmail.png";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
-// import { usePanelStore } from "@/store/panelStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 
 type TriggerNodeProps = {
@@ -18,7 +15,7 @@ type TriggerNodeProps = {
 const TriggerNode = ({ id }: TriggerNodeProps) => {
 
   const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
-  const setPanel = useSelectNodeStore((state) => state.setPanel)
+  const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
 
   return (
     <>
@@ -32,7 +29,7 @@ const TriggerNode = ({ id }: TriggerNodeProps) => {
       <div
         onClick={() => {
           setSelectedNode(id)
-          setPanel()
+          setShowPanel("open")
         }}
         className="w-64 h-auto border-[1.5px] border-dashed dark:border-gray-400 border-gray-900 hover:border-[1px] hover:border-blue-500 hover:border-solid rounded-lg px-3 py-2 bg-white dark:bg-[#242423] shadow-xl transition-colors duration-200"
       >
@@ -48,12 +45,12 @@ const TriggerNode = ({ id }: TriggerNodeProps) => {
           <IconExclamationCircleFilled size="16" className="text-yellow-500" />
 
           <div className="flex items-center gap-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md px-2 py-0.5 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition">
-            <Image
+            {/* <Image
               src={Gmail}
               width={12}
               height={12}
               alt="Gmail Icon"
-            />
+            /> */}
             <span className="text-[10px] font-medium text-gray-800 dark:text-gray-200">
               Gmail
             </span>

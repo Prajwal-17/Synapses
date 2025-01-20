@@ -6,7 +6,7 @@ import {
   Background,
   BackgroundVariant,
   useNodesState,
-  MiniMap,
+  // MiniMap,
   useEdgesState,
   Controls
 } from '@xyflow/react';
@@ -14,8 +14,8 @@ import '@xyflow/react/dist/style.css';
 import TriggerNode from './TriggerNode';
 import ActionNode from './ActionNode';
 import { PlaceholderNode } from './Placeholder-node';
-import { IconCircleDashedPlus } from '@tabler/icons-react';
-import SetupPanel from './SetupPanel';
+import { initialNodes } from '@/constants/InitialNodes';
+import { initialEdges } from '@/constants/InitialEdges';
 
 export const nodeTypes = {
   triggerNode: TriggerNode,
@@ -24,34 +24,6 @@ export const nodeTypes = {
 }
 
 const FlowComponent = () => {
-
-  const initialNodes = [
-    {
-      id: '1',
-      position: {
-        x: 0,
-        y: 0
-      },
-      data: {
-        label: 'Node 1'
-      },
-      type: "triggerNode"
-    },
-    {
-      id: '2',
-      position: {
-        x: 0,
-        y: 100
-      },
-      data: {
-        label: <IconCircleDashedPlus stroke={2} />
-      },
-      type: "placeholderNode"
-    },
-  ];
-  const initialEdges = [
-    { id: 'e1-2', source: '1', target: '2' }
-  ];
 
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
