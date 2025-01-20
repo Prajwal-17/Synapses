@@ -7,6 +7,8 @@ import {
 } from "@xyflow/react";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
 import { useSelectNodeStore } from "@/store/selectNodeStore";
+import { usePanelDetails } from "@/store/panelStore";
+import Image from "next/image";
 
 type ActionNodeProps = {
   id: string,
@@ -16,6 +18,7 @@ const ActionNode = ({ id }: ActionNodeProps) => {
 
   const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
+  const nodeData = usePanelDetails((state) => state.nodeData)
 
   return (
     <>
@@ -34,7 +37,8 @@ const ActionNode = ({ id }: ActionNodeProps) => {
         <div className="text-sm text-[12px] font-medium mb-2">
           <span className="font-bold text-gray-800 dark:text-gray-100">{id}. </span>
           <span className="text-gray-600 dark:text-gray-300">
-            Select an event.
+            {nodeData[Number(id) - 1].event ? nodeData[Number(id) - 1].event : "Select an event."}
+
           </span>
         </div>
 
@@ -43,14 +47,14 @@ const ActionNode = ({ id }: ActionNodeProps) => {
           <IconExclamationCircleFilled size="16" className="text-yellow-500" />
 
           <div className="flex items-center gap-2  border border-gray-300 dark:border-gray-600 rounded-md px-2 py-0.5 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition">
-            {/* <Image
-              src={Gmail}
+            <Image
+              src={`/icons/${nodeData[Number(id) - 1].app ? nodeData[Number(id) - 1].app.toLowerCase() + ".svg" : "zap.svg"}`}
               width={12}
               height={12}
               alt="Gmail Icon"
-            /> */}
+            />
             <span className="text-[10px] font-medium text-gray-800 dark:text-gray-200">
-              Gmail
+              {nodeData[Number(id) - 1].app ? nodeData[Number(id) - 1].app : "Action"}
             </span>
           </div>
         </div>

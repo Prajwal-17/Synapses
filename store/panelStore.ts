@@ -23,10 +23,7 @@ export const initialData: NodeData[] = [{
   account: "",
   type: NodeType.trigger,
   event: "",
-  config: {
-    to: "me itself",
-    cc: "rahul",
-  }
+  config: {}
 }]
 
 type PanelDetails = {

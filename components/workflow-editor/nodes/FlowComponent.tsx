@@ -29,7 +29,7 @@ const FlowComponent = () => {
   const [edges] = useEdgesState(initialEdges);
 
   return (<>
-    <div className='w-full h-full'>
+    <div className='w-full h-full relative'>
       <ReactFlowProvider>
         <ReactFlow
           defaultNodes={initialNodes}
@@ -42,6 +42,9 @@ const FlowComponent = () => {
           proOptions={{ hideAttribution: true }}
         >
           {/* <MiniMap /> */}
+          <button className='bg-black text-white p-3 rounded-xl absolute right-0 z-50'>
+            Save
+          </button>
           <Controls />
           <Background variant={BackgroundVariant.Cross} gap={40} />
         </ReactFlow>
