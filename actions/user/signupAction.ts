@@ -1,14 +1,14 @@
 "use server"
 
-import { signUpInputs } from "@/app/auth/sign-up/page"
+import { SignUpInputs } from "@/app/auth/sign-up/page"
 import prisma from "@/lib/db"
 import bcrypt from "bcryptjs"
 
-export const signUpAction = async (formData: signUpInputs) => {
+export const signUpAction = async (formData: SignUpInputs) => {
 
   try {
 
-    if (!formData.username || !formData.email || !formData.password) {
+    if (!formData.name || !formData.email || !formData.password) {
       return { message: "All fields are required", success: false }
     }
 
@@ -26,7 +26,7 @@ export const signUpAction = async (formData: signUpInputs) => {
 
     const user = await prisma.user.create({
       data: {
-        name: formData.username,
+        name: formData.name,
         email: formData.email,
         password: hashedPassword,
       }
