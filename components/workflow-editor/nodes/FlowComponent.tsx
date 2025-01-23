@@ -16,6 +16,7 @@ import ActionNode from './ActionNode';
 import { PlaceholderNode } from './Placeholder-node';
 import { initialNodes } from '@/constants/InitialNodes';
 import { initialEdges } from '@/constants/InitialEdges';
+import Save from '../save';
 
 export const nodeTypes = {
   triggerNode: TriggerNode,
@@ -42,9 +43,7 @@ const FlowComponent = () => {
           proOptions={{ hideAttribution: true }}
         >
           {/* <MiniMap /> */}
-          <button className='bg-black text-white p-3 rounded-xl absolute right-0 z-50'>
-            Save
-          </button>
+          <Save />
           <Controls />
           <Background variant={BackgroundVariant.Cross} gap={40} />
         </ReactFlow>

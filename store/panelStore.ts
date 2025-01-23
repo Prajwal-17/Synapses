@@ -28,13 +28,18 @@ export const initialData: NodeData[] = [{
 
 type PanelDetails = {
   nodeData: NodeData[],
+  originalData: NodeData[],
   setNodeData: () => void,
   updateNodeData: (nodeId: string, updatedData: Partial<NodeData>) => void,
+  getChanges: () => void,
+  saveChanges: () => void,
 }
-export const usePanelDetails = create<PanelDetails>((set) => ({
+export const usePanelDetails = create<PanelDetails>((set, get) => ({
   nodeData: initialData,
-  setNodeData: () => set((state) => ({
-    nodeData: [...state.nodeData, {
+  originalData: initialData,
+
+  setNodeData: () => set((state) => {
+    const newNode = {
       stepNo: state.nodeData.length + 1,
       nodeId: uuidv4(),
       app: "",
@@ -42,11 +47,30 @@ export const usePanelDetails = create<PanelDetails>((set) => ({
       type: NodeType.action,
       event: "",
       config: {},
-    }]
-  })),
+    };
+
+    return {
+      nodeData: [...state.nodeData, newNode],
+      originalData: [...state.originalData, newNode]
+    }
+  }),
+
   updateNodeData: (nodeId, updatedData) => set((state) => ({
     nodeData: state.nodeData.map((item) =>
       item.nodeId === nodeId ? { ...item, ...updatedData } : item,
     )
   })),
+
+  getChanges: () => {
+    const { nodeData, originalData } = get();
+
+    return nodeData.filter((step, index) => (
+      JSON.stringify(step) !== JSON.stringify(originalData[index])
+    ))
+  },
+
+  saveChanges: () => set((state) => ({
+    originalData: state.nodeData
+  }))
+
 }))
