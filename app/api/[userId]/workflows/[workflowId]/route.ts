@@ -1,5 +1,5 @@
 import prisma from "@/lib/db";
-import { NodeData, NodeType } from "@/store/panelStore";
+import { NodeData, NodeType } from "@/store/panelDetailsStore";
 import { NextRequest, NextResponse } from "next/server";
 
 //Get Full Data of a workflow
@@ -44,15 +44,15 @@ export async function GET(
 
     nodeData.push({
       stepNo: 1,
-      //@ts-expect-error
+      //@ts-ignore
       nodeId: workflow.triggerId,
-      //@ts-expect-error
+      //@ts-ignore
       app: workflow.Trigger?.appType,
       account: "",
-      //@ts-expect-error
+      //@ts-ignore
       type: workflow.Trigger?.type,
       event: "",
-      //@ts-expect-error
+      //@ts-ignore
       config: workflow.Trigger?.config,
     });
 

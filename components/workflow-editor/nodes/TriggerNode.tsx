@@ -7,7 +7,7 @@ import {
 } from "@xyflow/react";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { usePanelDetails } from "@/store/panelStore";
+import { usePanelDetails } from "@/store/panelDetailsStore";
 import Image from "next/image";
 
 type TriggerNodeProps = {

@@ -3,7 +3,7 @@
 import {
   CardContent,
 } from "@/components/ui/card";
-import { NodeData } from "@/store/panelStore";
+import { NodeData } from "@/store/panelDetailsStore";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";
 import Commit from "./github/Commit";

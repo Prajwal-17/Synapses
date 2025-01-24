@@ -31,7 +31,7 @@ type PanelDetails = {
   originalData: NodeData[],
   setNodeData: () => void,
   updateNodeData: (nodeId: string, updatedData: Partial<NodeData>) => void,
-  getWorkflowDetails: (data: NodeData) => void,
+  initialWorkflowUpdate: (data: NodeData[]) => void,
   getChanges: () => void,
   saveChanges: () => void,
 }
@@ -62,11 +62,22 @@ export const usePanelDetails = create<PanelDetails>((set, get) => ({
     )
   })),
 
-  getWorkflowDetails: (data) => set((state) => ({
-    nodeData: [...state.nodeData, data],
-    originalData: [...state.nodeData, data]
-  })),
+  initialWorkflowUpdate: (data) => set((state) => {
 
+    // state.nodeData.splice(0);
+
+    console.log("zustand nodedata", state.nodeData)
+    console.log("zustand data", data)
+    // const value = data.
+
+    return {
+      nodeData: [...data],
+      originalData: [...data]
+    }
+  }),
+
+  // nodeData: [...state.nodeData, data],
+  // originalData: [...state.nodeData, data]
   getChanges: () => {
     const { nodeData, originalData } = get();
 

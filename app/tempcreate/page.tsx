@@ -1,6 +1,6 @@
 "use client"
 
-import { usePanelDetails } from "@/store/panelStore";
+import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSession } from "next-auth/react"
 import { useEffect } from "react";
 
@@ -25,9 +25,7 @@ export default function Create() {
 
   useEffect(() => {
     console.log(getChanges())
-  }, [])
-
-
+  }, [getChanges])
 
   return (<>
     <div>

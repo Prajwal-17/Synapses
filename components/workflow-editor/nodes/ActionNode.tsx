@@ -7,7 +7,7 @@ import {
 } from "@xyflow/react";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { usePanelDetails } from "@/store/panelStore";
+import { usePanelDetails } from "@/store/panelDetailsStore";
 import Image from "next/image";
 
 type ActionNodeProps = {
@@ -38,7 +38,6 @@ const ActionNode = ({ id }: ActionNodeProps) => {
           <span className="font-bold text-gray-800 dark:text-gray-100">{id}. </span>
           <span className="text-gray-600 dark:text-gray-300">
             {nodeData[Number(id) - 1].event ? nodeData[Number(id) - 1].event : "Select an event."}
-
           </span>
         </div>
 

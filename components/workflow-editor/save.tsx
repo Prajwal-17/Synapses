@@ -1,6 +1,6 @@
 "use client"
 
-import { usePanelDetails } from "@/store/panelStore"
+import { usePanelDetails } from "@/store/panelDetailsStore"
 import { usePathname } from "next/navigation"
 
 export default function Save() {
