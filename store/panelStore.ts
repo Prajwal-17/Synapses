@@ -1,7 +1,7 @@
 import { create } from "zustand"
 import { v4 as uuidv4 } from 'uuid';
 
-enum NodeType {
+export enum NodeType {
   trigger = "trigger",
   action = "action"
 }
@@ -31,6 +31,7 @@ type PanelDetails = {
   originalData: NodeData[],
   setNodeData: () => void,
   updateNodeData: (nodeId: string, updatedData: Partial<NodeData>) => void,
+  getWorkflowDetails: (data: NodeData) => void,
   getChanges: () => void,
   saveChanges: () => void,
 }
@@ -59,6 +60,11 @@ export const usePanelDetails = create<PanelDetails>((set, get) => ({
     nodeData: state.nodeData.map((item) =>
       item.nodeId === nodeId ? { ...item, ...updatedData } : item,
     )
+  })),
+
+  getWorkflowDetails: (data) => set((state) => ({
+    nodeData: [...state.nodeData, data],
+    originalData: [...state.nodeData, data]
   })),
 
   getChanges: () => {

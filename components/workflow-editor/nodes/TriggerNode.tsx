@@ -3,7 +3,7 @@
 import React from "react";
 import {
   Handle,
-  Position
+  Position,
 } from "@xyflow/react";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
 import { useSelectNodeStore } from "@/store/selectNodeStore";

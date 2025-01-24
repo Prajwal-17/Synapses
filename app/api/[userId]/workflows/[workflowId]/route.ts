@@ -1,8 +1,10 @@
 import prisma from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NodeData, NodeType } from "@/store/panelStore";
+import { NextRequest, NextResponse } from "next/server";
 
 //Get Full Data of a workflow
 export async function GET(
+  req: NextRequest,
   { params }: {
     params: {
       userId: string,
@@ -27,17 +29,55 @@ export async function GET(
     const workflow = await prisma.workflow.findFirst({
       where: {
         id: workflowId,
+      },
+      include: {
+        Trigger: true,
+        actions: true,
       }
     });
-
-    console.log(workflow)
 
     if (!workflow) {
       return NextResponse.json({ msg: "Workflow does not exist" }, { status: 400 })
     }
 
+    const nodeData: NodeData[] = []
 
-    return NextResponse.json({ msg: "done" }, { status: 200 })
+    nodeData.push({
+      stepNo: 1,
+      //@ts-expect-error
+      nodeId: workflow.triggerId,
+      //@ts-expect-error
+      app: workflow.Trigger?.appType,
+      account: "",
+      //@ts-expect-error
+      type: workflow.Trigger?.type,
+      event: "",
+      //@ts-expect-error
+      config: workflow.Trigger?.config,
+    });
+
+    workflow.actions.map((item) => {
+      nodeData.push(
+
+        {
+          stepNo: item.stepNo,
+          nodeId: item.id,
+          app: item.appType,
+          account: "",
+          type: NodeType.action,
+          event: "",
+          config: item.config as Record<string, any>,
+        }
+      )
+    })
+
+    console.log(nodeData)
+    // workflow.actions.map((item) => {
+    //   console.log(item.config.to)
+    // })
+
+
+    return NextResponse.json({ msg: "Successfully fetched workflow details", nodeData }, { status: 200 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 })
@@ -76,10 +116,62 @@ export async function POST(
     })
 
     if (!workflow) {
-      return NextResponse.json({ msg: "Workflow not found or does not belong to the user" }, { status: 400 })
-    } 
+      return NextResponse.json({ msg: "Workflow does not exist or does not belong to the user" }, { status: 400 })
+    }
 
-    return NextResponse.json({ msg: "done" }, { status: 200 })
+    const triggers = [];
+    const actions = [];
+
+    for (const step of body as NodeData[]) {
+      if (step.type === "trigger") {
+        triggers.push({
+          where: {
+            id: step.nodeId,
+          },
+          update: {
+            workflowId: workflow.id,
+            appType: step.app,
+            type: step.type,
+            config: step.config,
+          },
+          create: {
+            id: step.nodeId,
+            workflowId: workflow.id,
+            appType: step.app,
+            type: step.type,
+            config: step.config,
+          }
+        })
+      } else if (step.type === "action") {
+        actions.push({
+          where: {
+            id: step.nodeId,
+          },
+          update: {
+            workflowId: workflowId,
+            appType: step.app,
+            type: step.type,
+            config: step.config,
+            stepNo: step.stepNo,
+          },
+          create: {
+            id: step.nodeId,
+            workflowId: workflowId,
+            appType: step.app,
+            type: step.type,
+            config: step.config,
+            stepNo: step.stepNo,
+          }
+        })
+      }
+    }
+
+    const updatedData = await prisma.$transaction([
+      ...triggers.map((t) => prisma.trigger.upsert(t)),
+      ...actions.map((a) => prisma.action.upsert(a))
+    ])
+
+    return NextResponse.json({ msg: "Successfully updated", updatedData }, { status: 200 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 })
@@ -87,7 +179,7 @@ export async function POST(
 }
 
 //Delete a workflow
-export async function DELETE(req: NextResponse) {
+export async function DELETE() {
 
   try {
 

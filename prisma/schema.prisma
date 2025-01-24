@@ -64,7 +64,6 @@ model Trigger {
   appType    String
   type       NodeType @default(trigger)
   config     Json
-  actions    Action[]
 
   workflow  Workflow @relation(fields: [workflowId], references: [id])
   createdAt DateTime @default(now())
@@ -77,14 +76,14 @@ enum NodeType {
 
 model Action {
   id         String   @id @default(uuid())
-  triggerId  String
+  // triggerId  String
   workflowId String
   appType    String
   type       NodeType @default(action)
   config     Json
   stepNo     Int
 
-  trigger  Trigger   @relation(fields: [triggerId], references: [id])
+  // trigger  Trigger   @relation(fields: [triggerId], references: [id])
   Workflow Workflow? @relation(fields: [workflowId], references: [id])
 
   createdAt DateTime @default(now())

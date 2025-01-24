@@ -8,7 +8,7 @@ import {
   useNodesState,
   // MiniMap,
   useEdgesState,
-  Controls
+  Controls,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import TriggerNode from './TriggerNode';
@@ -24,7 +24,7 @@ export const nodeTypes = {
   actionNode: ActionNode,
 }
 
-const FlowComponent = () => {
+export default function FlowComponent() {
 
   const [nodes] = useNodesState(initialNodes);
   const [edges] = useEdgesState(initialEdges);
@@ -52,5 +52,3 @@ const FlowComponent = () => {
   </>
   );
 };
-
-export default FlowComponent;

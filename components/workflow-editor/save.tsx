@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 
 export default function Save() {
 
-  const nodeData = usePanelDetails((state) => state.nodeData)
   const pathname = usePathname().split("/");
   const userId = pathname[2];
   const workflowId = pathname[3]

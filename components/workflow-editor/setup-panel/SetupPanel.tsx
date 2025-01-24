@@ -13,8 +13,8 @@ const SetupPanel = () => {
   return (<>
 
     {
-      nodeData.map((item: NodeData) => (
-        <div key={item.stepNo}>
+      nodeData.map((item: NodeData, index) => (
+        <div key={index}>
           {item.stepNo === selectedNode && showPanel ? (
             <SetupCard currData={item} />
           ) :

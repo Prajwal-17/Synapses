@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { NodeData, usePanelDetails } from "@/store/panelStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const SendEmail = ({ currData }: { currData: NodeData }) => {
 
