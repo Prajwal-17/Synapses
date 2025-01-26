@@ -1,9 +1,9 @@
 "use client"
 
 import { Input } from "@/components/ui/input";
-import { NodeData, usePanelDetails } from "@/store/panelStore";
+import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const SendEmail = ({ currData }: { currData: NodeData }) => {
 
@@ -17,10 +17,6 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
 
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
   const updateNodeData = usePanelDetails((state) => state.updateNodeData)
-
-  useEffect(() => {
-    console.log("currdata in sendemail", currData)
-  }, [currData])
 
   return (<>
     <div className="space-y-3">

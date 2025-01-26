@@ -3,20 +3,13 @@
 import {
   CardContent,
 } from "@/components/ui/card";
-import { Input } from "../../ui/input"
-import { useState } from "react";
-import { NodeData } from "@/store/panelStore";
-import { integrations } from "@/constants/Integrations";
+import { NodeData } from "@/store/panelDetailsStore";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";
 import Commit from "./github/Commit";
 import Pullrequest from "./github/Pullrequest";
 
 const ConfigureData = ({ currData }: { currData: NodeData }) => {
-
-
-
-  console.log(currData)
 
   const renderConfigureComponent = (selectedEvent: string) => {
     switch (selectedEvent) {

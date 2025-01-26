@@ -52,33 +52,38 @@ model Workflow {
   triggerId        String?  @unique
   actions          Action[]
 
-  user    User     @relation(fields: [userId], references: [id])
   Trigger Trigger?
+  user    User     @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
 }
 
 model Trigger {
   id         String   @id @default(uuid())
-  workflowId String
+  workflowId String   @unique
   appType    String
+  type       NodeType @default(trigger)
   config     Json
-  actions    Action[]
 
-  workflow Workflow @relation(fields: [id], references: [triggerId])
-
+  workflow  Workflow @relation(fields: [workflowId], references: [id])
   createdAt DateTime @default(now())
 }
 
+enum NodeType {
+  trigger
+  action
+}
+
 model Action {
-  id         String @id @default(uuid())
-  triggerId  String
+  id         String   @id @default(uuid())
+  // triggerId  String
   workflowId String
   appType    String
+  type       NodeType @default(action)
   config     Json
   stepNo     Int
 
-  trigger  Trigger   @relation(fields: [triggerId], references: [id])
+  // trigger  Trigger   @relation(fields: [triggerId], references: [id])
   Workflow Workflow? @relation(fields: [workflowId], references: [id])
 
   createdAt DateTime @default(now())

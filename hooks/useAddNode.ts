@@ -1,5 +1,5 @@
 import { useReactFlow } from "@xyflow/react";
-import { usePanelDetails } from "@/store/panelStore";
+import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 
 export const useAddNode = () => {

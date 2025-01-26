@@ -1,6 +1,6 @@
 "use client"
 
-import { NodeData, usePanelDetails } from "@/store/panelStore";
+import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import { SetupCard } from "./SetupCard";
 
@@ -13,8 +13,8 @@ const SetupPanel = () => {
   return (<>
 
     {
-      nodeData.map((item: NodeData) => (
-        <div key={item.stepNo}>
+      nodeData.map((item: NodeData, index) => (
+        <div key={index}>
           {item.stepNo === selectedNode && showPanel ? (
             <SetupCard currData={item} />
           ) :

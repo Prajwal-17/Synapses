@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { NodeData, usePanelDetails } from "@/store/panelStore";
+import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import Image from "next/image";
 import { Label } from "@radix-ui/react-label";

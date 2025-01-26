@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { IconX } from "@tabler/icons-react"
 import { Separator } from "@radix-ui/react-separator"
-import { NodeData } from "@/store/panelStore";
+import { NodeData } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import ConfigureData from "../configure-panel/ConfigureCard";
 import SetuptData from "./SetuptData";
