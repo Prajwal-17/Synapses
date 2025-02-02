@@ -14,6 +14,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:packages/typescript-config
+      '@types/node':
+        specifier: ^22.13.0
+        version: 22.13.0
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
@@ -26,6 +29,9 @@ importers:
 
   apps/test:
     dependencies:
+      '@repo/db':
+        specifier: workspace:^
+        version: link:../../packages/db
       '@repo/tailwind-config':
         specifier: workspace:*
         version: link:../../packages/tailwind-config
@@ -200,6 +206,22 @@ importers:
         specifier: ^5.7.2
         version: 5.7.3
 
+  packages/db:
+    dependencies:
+      '@prisma/client':
+        specifier: ^6.1.0
+        version: 6.3.0(prisma@6.3.0(typescript@5.7.3))(typescript@5.7.3)
+    devDependencies:
+      '@faker-js/faker':
+        specifier: ^9.3.0
+        version: 9.4.0
+      '@types/node':
+        specifier: ^22.13.0
+        version: 22.13.0
+      prisma:
+        specifier: ^6.1.0
+        version: 6.3.0(typescript@5.7.3)
+
   packages/eslint-config:
     devDependencies:
       '@eslint/js':
@@ -261,9 +283,6 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      '@repo/ui':
-        specifier: workspace:*
-        version: 'link:'
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -292,6 +311,9 @@ importers:
       '@repo/tailwind-config':
         specifier: workspace:*
         version: link:../tailwind-config
+      '@repo/ui':
+        specifier: workspace:^
+        version: 'link:'
       '@turbo/gen':
         specifier: ^2.3.3
         version: 2.4.0(@types/node@22.13.0)(typescript@5.7.3)
