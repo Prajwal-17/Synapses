@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { prisma } from "@repo/db/prisma";
 import { NodeData, NodeType } from "@/store/panelDetailsStore";
 import { NextRequest, NextResponse } from "next/server";
 

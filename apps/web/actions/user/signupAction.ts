@@ -1,7 +1,7 @@
 "use server"
 
 import { SignUpInputs } from "@/app/auth/sign-up/page"
-import prisma from "@/lib/db"
+import { prisma } from "@repo/db/prisma"
 import bcrypt from "bcryptjs"
 
 export const signUpAction = async (formData: SignUpInputs) => {

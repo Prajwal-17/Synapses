@@ -1,8 +1,5 @@
-const baseConfig = require("@repo/tailwind-config");
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  ...baseConfig,
   darkMode: ["class"],
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",

@@ -1,5 +1,5 @@
 import { authOptions } from "@/lib/authOptions";
-import prisma from "@/lib/db";
+import { prisma } from "@repo/db/prisma";
 import { google } from "googleapis";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";

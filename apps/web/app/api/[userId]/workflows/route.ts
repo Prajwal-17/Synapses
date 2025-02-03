@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { prisma } from "@repo/db/prisma";
 import { NextRequest, NextResponse } from "next/server"
 
 //Create a workflow

@@ -1,7 +1,4 @@
-import baseConfig from "@repo/tailwind-config"
-
 const config = {
-	...baseConfig,
 	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -25,4 +22,4 @@ const config = {
 	plugins: [require("tailwindcss-animate")],
 }
 
-export default config;
+module.exports = config;
