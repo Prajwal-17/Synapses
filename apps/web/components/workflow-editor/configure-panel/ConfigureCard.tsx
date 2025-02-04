@@ -2,7 +2,7 @@
 
 import {
   CardContent,
-} from "@/components/ui/card";
+} from "@repo/ui/components/card";
 import { NodeData } from "@/store/panelDetailsStore";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";

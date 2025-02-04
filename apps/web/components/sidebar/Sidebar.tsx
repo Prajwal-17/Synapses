@@ -1,7 +1,7 @@
 "use client"
 
 import { useSidebarStore } from "@/store/sidebarStore"
-import { Separator } from "@radix-ui/react-separator"
+import { Separator } from "@repo/ui/components/separator"
 import { History, House, PlugZap, Plus, Settings } from "lucide-react"
 import Link from "next/link"
 

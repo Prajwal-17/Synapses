@@ -1,6 +1,6 @@
 "use client"
 
-import { Separator } from "@radix-ui/react-separator"
+import { Separator } from "@repo/ui/components/separator"
 import { Menu, MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"

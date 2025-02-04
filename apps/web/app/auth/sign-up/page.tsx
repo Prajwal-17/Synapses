@@ -11,7 +11,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@repo/ui/components/card"
 import { Separator } from "@radix-ui/react-separator";
 import Link from "next/link";
 import { toast } from "sonner";

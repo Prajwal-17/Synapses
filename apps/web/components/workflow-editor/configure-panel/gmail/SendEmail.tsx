@@ -1,6 +1,6 @@
 "use client"
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@repo/ui/components/input";
 import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import { useState } from "react";

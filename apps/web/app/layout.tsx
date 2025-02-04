@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
 import NavbarWrapper from "@/providers/NavbarWrapper";
 import SidebarWarpper from "@/providers/SidebarWrapper";
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@repo/ui/components/sonner"
 import { authOptions } from "@/lib/authOptions";
 
 const dm_sans = DM_Sans({

@@ -2,7 +2,7 @@
 
 import {
   CardContent,
-} from "@/components/ui/card";
+} from "@repo/ui/components/card";
 import {
   Select,
   SelectContent,
@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@repo/ui/components/select";
 import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import Image from "next/image";

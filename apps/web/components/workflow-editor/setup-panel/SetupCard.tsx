@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@repo/ui/components/card";
 import { IconX } from "@tabler/icons-react"
 import { Separator } from "@radix-ui/react-separator"
 import { NodeData } from "@/store/panelDetailsStore";
