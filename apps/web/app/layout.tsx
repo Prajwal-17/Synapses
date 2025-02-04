@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "./globals.css"
 import { getServerSession } from "next-auth";
 import SessionProviderWrapper from "../providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
