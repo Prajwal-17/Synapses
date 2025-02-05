@@ -18,6 +18,8 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
   const updateNodeData = usePanelDetails((state) => state.updateNodeData)
 
+  console.log("data inside send email ", currData)
+
   return (<>
     <div className="space-y-3">
 

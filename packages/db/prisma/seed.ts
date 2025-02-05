@@ -14,6 +14,14 @@ main()
 async function main() {
   console.log("....Seeding Database");
 
+  await prisma.user.create({
+    data: {
+      name: "testUser",
+      email: "prajwalk1702@gmail.com",
+      password: "$2a$10$7I8yzWFc/QBQ2xmSzkBbeesfzVISm1D4rYOHYxhZ0KreQjU3cn59K",
+    }
+  })
+
   for (let i = 0; i < 5; i++) {
     await prisma.user.create({
       data: {
