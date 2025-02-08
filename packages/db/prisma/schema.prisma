@@ -61,12 +61,13 @@ model Workflow {
 }
 
 model Trigger {
-  id         String   @id @default(uuid())
-  workflowId String   @unique
-  appType    String
-  type       NodeType @default(trigger)
-  eventType  String
-  config     Json
+  id           String   @id @default(uuid())
+  workflowId   String   @unique
+  connectionId String
+  appType      String
+  type         NodeType @default(trigger)
+  eventType    String
+  config       Json
 
   workflow  Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -94,7 +95,7 @@ model Action {
 model GmailConnection {
   id           String @id @default(uuid())
   userId       String @unique
-  gmail        String
+  gmail        String @unique
   accessToken  String
   refreshToken String
   tokenType    String

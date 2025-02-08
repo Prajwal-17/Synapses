@@ -44,6 +44,7 @@ async function main() {
   const trigger = await prisma.trigger.create({
     data: {
       workflowId: workflow.id,
+      connectionId: "",
       appType: "email",
       eventType: "LISTEN-EMAIL",
       config: {},
