@@ -50,7 +50,6 @@ model Workflow {
   id               String   @id @default(uuid())
   userId           String
   totalActionSteps Int
-  triggerId        String?  @unique
   actions          Action[]
 
   Trigger Trigger?

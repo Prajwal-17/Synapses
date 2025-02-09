@@ -51,11 +51,6 @@ async function main() {
     },
   });
 
-  await prisma.workflow.update({
-    where: { id: workflow.id },
-    data: { triggerId: trigger.id },
-  });
-
   await prisma.action.create({
     data: {
       workflowId: workflow.id,

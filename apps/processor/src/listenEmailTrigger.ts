@@ -1,36 +1,7 @@
 import { prisma } from "./db";
-import { getRefreshTokenFromDB } from "./getRefreshTokenFromDB";
+import { getRefreshTokenFromDB, updateAccessToken } from "./tokenFncs";
 import { google } from "googleapis";
-
-type WorkflowType = {
-  id: string,
-  userId: string,
-  totalActionSteps: number,
-  lastCheckedAt: Date,
-  createdAt: Date,
-  Trigger: {
-    id: string,
-    workflowId: string,
-    connectionId: string,
-    appType: string,
-    type: string,
-    eventType: String,
-    config: JSON,
-    createdAt: Date,
-  },
-  actions: ActionsType[]
-};
-
-type ActionsType = {
-  id: string,
-  workflowId: string,
-  appType: string,
-  type: string,
-  eventType: string,
-  config: JSON,
-  stepNo: number,
-  createdAt: Date
-}
+import { ActionsType, WorkflowType } from "./types/types";
 
 const gmail = google.gmail("v1");
 
@@ -38,84 +9,72 @@ export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[])
   try {
     for (const workflow of emailFilteredWorkflows) {
 
-      const lastCheckedAt = workflow.lastCheckedAt.getTime();
       const nowTime = new Date().getTime();
+      const triggerInterval = 15 * 60 * 1000;
+      const lastCheckedAt = workflow.lastCheckedAt.getTime();
 
-      if (!lastCheckedAt) {
-        console.log("run immediately")
-      } else {
+      if (nowTime - lastCheckedAt <= triggerInterval) {
 
-        //triggerInterval of 15min
-        const triggerInterval = 15 * 60 * 1000;
+        //Connection id of the integration app associated with trigger
+        const connectionId = workflow.Trigger?.connectionId;
+        const appType = workflow.Trigger?.appType;
 
-        if (nowTime - lastCheckedAt >= triggerInterval) {
-          console.log("15min have passed fetch email")
+        if (connectionId && appType) {
+          const connectionDetails = await getRefreshTokenFromDB(appType, connectionId);
 
-          // fetch accessToken and fetch email and check if how many email have arrived == 111
-          // and update outbox table with tasks  
-          const connectionId = workflow.Trigger?.connectionId;
-          const appType = workflow.Trigger?.appType;
-
-          if (connectionId && appType) {
-            const connectionDetails = await getRefreshTokenFromDB(appType, connectionId);
-
-            if (!connectionDetails) {
-              console.log("no refresh token")
-            }
-
-            const oauth2client = new google.auth.OAuth2(
-              process.env.GOOGLE_CLIENT_ID,
-              process.env.GOOGLE_CLIENT_SECRET,
-              `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}/api/auth/google/callback`
-            );
-            oauth2client.setCredentials({ refresh_token: connectionDetails?.refreshToken });
-
-
-            try {
-              const emails = await gmail.users.messages.list({
-                userId: "me",
-                access_token: connectionDetails?.accessToken,
-                q: "is:inbox is:unread",
-                maxResults: 10
-              });
-
-            } catch (error: any) {
-
-              if (error.code == 401) {
-                const accessToken = await oauth2client.getAccessToken();
-                console.log("accessToken---------", accessToken.token)
-
-                /**Add db logic to store accestoken */
-
-                if (accessToken.token) {
-                  const response = await gmail.users.messages.list({
-                    userId: "me",
-                    access_token: accessToken.token,
-                    q: "is:inbox is:unread",
-                    maxResults: 2
-                  });
-
-                  // console.log(response.data.messages)
-                  const latestEmails = await getEmailMessages(response.data.messages, accessToken.token);
-                  // console.log(latestEmails?.length)
-
-                  // const emaillenght = latestEmails.length();
-
-                  await addTasksToOutbox(workflow, latestEmails?.length || 0)
-                  // console.dir(emailFilteredWorkflows, { depth: null })
-
-                  // task addTasksToOutbox
-                  // console.log("latestemails", latestEmails)
-                  // console.dir(response, { depth: null })
-                }
-              } else {
-                console.warn("unexpected error caused in gmail tokens")
-              }
-            }
-          } else {
-            console.log("no connectionid & appType")
+          if (!connectionDetails) {
+            console.error("No Refresh token present")
+            continue;
           }
+
+          const oauth2client = new google.auth.OAuth2(
+            process.env.GOOGLE_CLIENT_ID,
+            process.env.GOOGLE_CLIENT_SECRET,
+            `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}/api/auth/google/callback`
+          );
+          oauth2client.setCredentials({ refresh_token: connectionDetails?.refreshToken });
+
+          try {
+            const response = await gmail.users.messages.list({
+              userId: "me",
+              access_token: connectionDetails?.accessToken,
+              q: "is:inbox is:unread",
+              maxResults: 7
+            });
+
+            const latestEmails = await getEmailMessages(response.data.messages, connectionDetails?.accessToken) || [];
+            if (latestEmails.length > 0) {
+              await addTasksToOutbox(workflow, latestEmails?.length)
+            }
+
+          } catch (error: any) {
+            if (error.code == 401) {
+              const accessToken = await oauth2client.getAccessToken();
+
+              await updateAccessToken(connectionDetails.id, accessToken.token ?? "")
+
+              if (accessToken.token) {
+                const response = await gmail.users.messages.list({
+                  userId: "me",
+                  access_token: accessToken.token,
+                  q: "is:inbox is:unread",
+                  maxResults: 7
+                });
+
+                const latestEmails = await getEmailMessages(response.data.messages, accessToken.token) || [];
+                if (latestEmails?.length > 0) {
+                  await addTasksToOutbox(workflow, latestEmails?.length)
+                }
+              }
+            } else {
+              console.error("Unexpected error caused in gmail tokens")
+            }
+          }
+        } else {
+          console.error("Fields ConnectionId and appType are not present")
         }
+      } else {
+        continue;
       }
     }
   } catch (error) {
@@ -147,42 +106,43 @@ async function getEmailMessages(messagesIds: any, accessToken: string) {
         if (nowTime - emailTime <= intervalTime) {
           latestEmails.push(email.data)
         } else {
-          console.log("NO latest Emails Found")
+          console.error("No latest Emails Found")
         }
       }
-
       return latestEmails
     }
   } catch (error) {
-    console.log("something went wrong", error)
+    console.error("Could not fetch getEmailMessages", error)
   }
 }
 
-async function addTasksToOutbox(workflow: any, emailLength: number) {
+async function addTasksToOutbox(workflow: WorkflowType, emailLength: number) {
+
+  if (!workflow?.actions) {
+    console.error(`Workflow ${workflow.id} actions are undefined, cannot add tasks to outbox.`);
+    return;
+  }
+
+  if (emailLength <= 0) {
+    console.log(`No new emails found for workflow ${workflow.id}, not adding any tasks.`);
+    return;
+  }
 
   try {
+    const task = workflow.actions.map((item: ActionsType) => ({
+      userId: workflow.userId,
+      workflowId: workflow.id,
+      stepNo: item.stepNo,
+      eventType: item.eventType,
+      payload: item.config || {},
+      status: "pending"
+    }));
 
-
-    workflow.map((item: WorkflowType) => {
-
-
-      return {
-        userId: item.userId,
-        workflowId: item.id,
-        stepNo:
-      }
+    await prisma.outbox.createMany({
+      data: task,
+      skipDuplicates: false,
     })
-    // workflow.filter((item: any) => item.actions)
-
-    // for (var i = 0; i < emailLength; i++) {
-    //   await prisma.outbox.createMany({
-    //     data: {
-    //       id: workflow.actions.map
-    //     }
-    //   })
-    // }
-
   } catch (error) {
-    console.log("Something went wrong while adding tasks", error)
+    console.error("Something went wrong while adding tasks", error)
   }
 }
