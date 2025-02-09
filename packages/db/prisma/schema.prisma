@@ -56,8 +56,9 @@ model Workflow {
   Trigger Trigger?
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  Outbox    Outbox[]
+  lastCheckedAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+  Outbox        Outbox[]
 }
 
 model Trigger {

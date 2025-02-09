@@ -45,7 +45,7 @@ async function main() {
     data: {
       workflowId: workflow.id,
       connectionId: "",
-      appType: "email",
+      appType: "gmail",
       eventType: "LISTEN-EMAIL",
       config: {},
     },
@@ -59,7 +59,7 @@ async function main() {
   await prisma.action.create({
     data: {
       workflowId: workflow.id,
-      appType: "email",
+      appType: "gmail",
       eventType: "send_email",
       stepNo: 1,
       config: {
