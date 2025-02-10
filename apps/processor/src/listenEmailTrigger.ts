@@ -13,7 +13,7 @@ export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[])
       const triggerInterval = 15 * 60 * 1000;
       const lastCheckedAt = workflow.lastCheckedAt.getTime();
 
-      if (nowTime - lastCheckedAt <= triggerInterval) {
+      if (nowTime - lastCheckedAt >= triggerInterval) {
 
         //Connection id of the integration app associated with trigger
         const connectionId = workflow.Trigger?.connectionId;
@@ -103,7 +103,7 @@ async function getEmailMessages(messagesIds: any, accessToken: string) {
       if (email.data.internalDate) {
         const emailTime = parseInt(email.data.internalDate);
 
-        if (nowTime - emailTime <= intervalTime) {
+        if (nowTime - emailTime >= intervalTime) {
           latestEmails.push(email.data)
         } else {
           console.error("No latest Emails Found")
@@ -141,7 +141,9 @@ async function addTasksToOutbox(workflow: WorkflowType, emailLength: number) {
     await prisma.outbox.createMany({
       data: task,
       skipDuplicates: false,
-    })
+    });
+
+    console.log("tasks added to outbox table")
   } catch (error) {
     console.error("Something went wrong while adding tasks", error)
   }
