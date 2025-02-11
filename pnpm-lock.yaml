@@ -164,6 +164,33 @@ importers:
         specifier: ^5.7.2
         version: 5.7.3
 
+  apps/worker:
+    dependencies:
+      '@prisma/client':
+        specifier: ^6.3.0
+        version: 6.3.1(prisma@6.3.1(typescript@5.7.3))(typescript@5.7.3)
+      '@repo/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/node':
+        specifier: ^22.13.1
+        version: 22.13.1
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.4.7
+      googleapis:
+        specifier: ^144.0.0
+        version: 144.0.0
+      kafkajs:
+        specifier: ^2.2.4
+        version: 2.2.4
+      typescript:
+        specifier: ^5.7.3
+        version: 5.7.3
+
   packages/db:
     dependencies:
       '@prisma/client':

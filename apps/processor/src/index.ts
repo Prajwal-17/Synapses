@@ -7,10 +7,15 @@ import { Kafka } from "kafkajs"
 dotenv.config()
 const POLLING_INTERVAL = 2000;
 
+const kafka = new Kafka({
+  clientId: "processor",
+  brokers: ["localhost:9092"]
+});
+
+const producer = kafka.producer()
+
 cron.schedule('*/3 * * * * *', () => {
-
   // getWorkflows();
-
 })
 
 async function getWorkflows() {
@@ -38,65 +43,36 @@ async function getWorkflows() {
   }
 }
 
-
 async function processOutbox() {
+
   try {
+    console.log("Fetching pending actions")
+
     const pendingActions = await prisma.outbox.findMany({
       where: {
         status: "pending"
       },
-      take: 2,
+      take: 20,
     });
+    // console.log(pendingActions);
 
-    console.log(pendingActions)
+    if (pendingActions.length === 0) return;
 
-  } catch (error) {
-    console.log(error)
-  }
-
-}
-
-// setInterval(processOutbox, POLLING_INTERVAL);
-
-const kafka = new Kafka({
-  clientId: "test_app",
-  brokers: ["kafka1:9092"]
-});
-
-const producer = kafka.producer()
-const consumer = kafka.consumer({ groupId: "consumerId" })
-
-async function main() {
-
-  try {
     await producer.connect();
 
+    // const messages =
+
     await producer.send({
-      topic: "test-topics",
+      topic: "tasks",
       messages: [
-        { value: "hello world" }
+        { key: "key1", value: "hello world" }
       ]
     });
 
-    // await producer.disconnect();
-    await consumer.connect();
-    await consumer.subscribe({
-      topic: "test-topics", fromBeginning: true,
-    })
-
-    await consumer.run({
-      eachMessage: async ({ topic, message, partition }) => {
-        console.log({
-          offset: message.offset,
-          value: message.value
-        })
-      }
-    })
-
 
   } catch (error) {
-    console.log(error)
+    console.log("Something went wrong in processor", error)
   }
 }
 
-main()
+setInterval(processOutbox, POLLING_INTERVAL);
