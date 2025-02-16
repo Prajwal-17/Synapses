@@ -23,6 +23,7 @@ export type ActionsType = {
   id: string,
   workflowId: string,
   appType: string,
+  connectionId: string,
   type: string,
   eventType: string,
   config: JsonValue,

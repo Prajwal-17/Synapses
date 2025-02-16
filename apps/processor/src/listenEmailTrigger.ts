@@ -1,5 +1,5 @@
 import { prisma } from "./db";
-import { getRefreshTokenFromDB, updateAccessToken } from "./tokenFncs";
+import { getTokenFromDB, updateAccessToken } from "./tokenFncs";
 import { google } from "googleapis";
 import { ActionsType, WorkflowType } from "./types/types";
 
@@ -13,6 +13,7 @@ export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[])
       const triggerInterval = 15 * 60 * 1000;
       const lastCheckedAt = workflow.lastCheckedAt.getTime();
 
+      // console.log(nowTime - lastCheckedAt >= triggerInterval)
       if (nowTime - lastCheckedAt >= triggerInterval) {
 
         //Connection id of the integration app associated with trigger
@@ -20,7 +21,7 @@ export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[])
         const appType = workflow.Trigger?.appType;
 
         if (connectionId && appType) {
-          const connectionDetails = await getRefreshTokenFromDB(appType, connectionId);
+          const connectionDetails = await getTokenFromDB(appType, connectionId);
 
           if (!connectionDetails) {
             console.error("No Refresh token present")
@@ -103,7 +104,7 @@ async function getEmailMessages(messagesIds: any, accessToken: string) {
       if (email.data.internalDate) {
         const emailTime = parseInt(email.data.internalDate);
 
-        if (nowTime - emailTime >= intervalTime) {
+        if (nowTime - emailTime <= intervalTime) {
           latestEmails.push(email.data)
         } else {
           console.error("No latest Emails Found")
@@ -133,6 +134,8 @@ async function addTasksToOutbox(workflow: WorkflowType, emailLength: number) {
       userId: workflow.userId,
       workflowId: workflow.id,
       stepNo: item.stepNo,
+      appType: item.appType,
+      connectionId: item.connectionId,
       eventType: item.eventType,
       payload: item.config || {},
       status: "pending"

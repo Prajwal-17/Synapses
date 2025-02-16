@@ -63,8 +63,8 @@ model Workflow {
 model Trigger {
   id           String   @id @default(uuid())
   workflowId   String   @unique
-  connectionId String
   appType      String
+  connectionId String
   type         NodeType @default(trigger)
   eventType    String
   config       Json
@@ -79,13 +79,14 @@ enum NodeType {
 }
 
 model Action {
-  id         String   @id @default(uuid())
-  workflowId String
-  appType    String
-  type       NodeType @default(action)
-  eventType  String
-  config     Json
-  stepNo     Int
+  id           String   @id @default(uuid())
+  workflowId   String
+  appType      String
+  connectionId String
+  type         NodeType @default(action)
+  eventType    String
+  config       Json
+  stepNo       Int
 
   Workflow Workflow? @relation(fields: [workflowId], references: [id], onDelete: Cascade)
 
@@ -109,13 +110,15 @@ model GmailConnection {
 }
 
 model Outbox {
-  id         String @id @default(uuid())
-  userId     String
-  workflowId String
-  stepNo     Int
-  eventType  String
-  payload    Json
-  status     String @default("pending")
+  id           String @id @default(uuid())
+  userId       String
+  workflowId   String
+  stepNo       Int
+  appType      String
+  connectionId String
+  eventType    String
+  payload      Json
+  status       String @default("pending")
 
   createdAt DateTime @default(now())
 

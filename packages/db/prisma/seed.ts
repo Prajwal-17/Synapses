@@ -55,6 +55,7 @@ async function main() {
     data: {
       workflowId: workflow.id,
       appType: "gmail",
+      connectionId: "",
       eventType: "send_email",
       stepNo: 1,
       config: {

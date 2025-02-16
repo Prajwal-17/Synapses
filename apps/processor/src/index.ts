@@ -15,7 +15,7 @@ const kafka = new Kafka({
 const producer = kafka.producer()
 
 cron.schedule('*/3 * * * * *', () => {
-  // getWorkflows();
+  getWorkflows();
 })
 
 async function getWorkflows() {
@@ -54,21 +54,32 @@ async function processOutbox() {
       },
       take: 20,
     });
-    // console.log(pendingActions);
 
     if (pendingActions.length === 0) return;
 
     await producer.connect();
 
-    // const messages =
+    const messages = pendingActions.map((item) => ({
+      key: item.workflowId,
+      value: JSON.stringify({
+        id: item.id,
+        userId: item.userId,
+        workflowId: item.workflowId,
+        stepNo: item.stepNo,
+        appType: item.appType,
+        connectionId: item.connectionId,
+        eventType: item.eventType,
+        payload: item.payload,
+        status: item.status,
+      })
+    }));
 
-    await producer.send({
+    const responses = await producer.send({
       topic: "tasks",
-      messages: [
-        { key: "key1", value: "hello world" }
-      ]
+      messages
     });
 
+    console.log("added to kafka")
 
   } catch (error) {
     console.log("Something went wrong in processor", error)

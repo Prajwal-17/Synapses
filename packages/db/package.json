@@ -6,7 +6,7 @@
     "./prisma": "./src/index.ts"
   },
   "scripts": {
-    "db:seed": "prisma db push && node prisma/seed.ts",
+    "db:seed": "prisma db push && ts-node prisma/seed.ts",
     "postinstall": "prisma generate"
   },
   "keywords": [],
@@ -15,10 +15,12 @@
   "devDependencies": {
     "@faker-js/faker": "^9.3.0",
     "@types/node": "^22.13.0",
-    "prisma": "^6.3.0"
+    "prisma": "^6.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@repo/typescript-config":"workspace:*",
-    "@prisma/client": "^6.3.0"
+    "@prisma/client": "^6.3.0",
+    "@repo/typescript-config": "workspace:*"
   }
 }
