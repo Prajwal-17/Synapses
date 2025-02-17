@@ -1,7 +1,7 @@
+import { ActionsType, WorkflowType } from "@repo/types";
 import { prisma } from "./db";
 import { getTokenFromDB, updateAccessToken } from "./tokenFncs";
 import { google } from "googleapis";
-import { ActionsType, WorkflowType } from "./types/types";
 
 const gmail = google.gmail("v1");
 
@@ -79,7 +79,7 @@ export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[])
       }
     }
   } catch (error) {
-    console.log("Something went wrong")
+    console.error("Something went wrong in listenemailtrigger")
   }
 }
 

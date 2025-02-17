@@ -2,26 +2,10 @@ import { google } from "googleapis";
 import { Kafka } from "kafkajs";
 import dotenv from "dotenv"
 import { getTokenFromDB } from "./tokenFncs";
+import { prisma } from "./db";
+import { EmailPayloadType, TaskType } from "@repo/types";
 
 dotenv.config()
-type TaskType = {
-  id: string,
-  userId: string,
-  workflowId: string,
-  stepNo: number,
-  appType: string,
-  connectionId: string,
-  eventType: string,
-  payload: PayloadType
-  status: string
-}
-
-type PayloadType = {
-  to: string,
-  from: string,
-  subject: string,
-  body: string,
-}
 
 const kafka = new Kafka({
   clientId: "worker",
@@ -32,7 +16,6 @@ const consumer = kafka.consumer({ groupId: "task-consumer" });
 
 async function main() {
   try {
-
     await consumer.connect();
     await consumer.subscribe({
       topic: "tasks",
@@ -44,7 +27,6 @@ async function main() {
         try {
 
           const task = JSON.parse(message.value?.toString() || "");
-          // console.log("task ", message)
 
           if (task.eventType === "send_email") {
             await sendEmail(task);
@@ -52,33 +34,20 @@ async function main() {
             console.log("Event type not matched")
           }
         } catch (error) {
-          console.log("Something went wrong in worker", error)
+          console.error("Something went wrong in worker", error)
         }
       }
     })
-
   } catch (error) {
-    console.log("Something went wrong in worker", error)
+    console.error("Something went wrong in worker", error)
   }
 }
 
 main()
-/**
- * create and oauth client 
- * get access/refresh token 
- * if not else create one 
- * send email 
- * handle success and failure 
- * update db 
-*/
 
 async function sendEmail(task: TaskType) {
   try {
-    // console.log("inside sendEmail function", task)
-
     const connectionDetails = await getTokenFromDB(task.appType, task.connectionId)
-
-    // console.log(connectionDetails)
 
     const oauth2client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT_ID,
@@ -88,21 +57,18 @@ async function sendEmail(task: TaskType) {
     oauth2client.setCredentials({
       refresh_token: connectionDetails?.refreshToken,
     });
-    // const accessToken = await oauth2client.getAccessToken();
-    // console.log("--------------", accessToken);
-    // console.log("--------------", connectionDetails?.refreshToken)
 
     const gmail = google.gmail({ version: "v1", auth: oauth2client })
 
-    const createEmail = ({ to, from, subject, body }: PayloadType) => {
+    const createEmail = ({ to, from, subject, body }: EmailPayloadType) => {
       const email = [
-        `To: ${task.payload.to}`,
-        `From: ${task.payload.from}`,
-        `Subject: ${task.payload.subject}`,
+        `To: ${to}`,
+        `From: ${from}`,
+        `Subject: ${subject}`,
         'MIME-Version: 1.0',
         'Content-Type: text/html; charset=utf-8',
         '',
-        `${task.payload.body}`
+        `${body}`
       ].join('\r\n');
 
       return Buffer.from(email, "utf-8")
@@ -119,8 +85,6 @@ async function sendEmail(task: TaskType) {
       body: `${task.payload.body}`,
     })
 
-    console.log("raw email", email)
-
     if (email) {
       const response = await gmail.users.messages.send({
         userId: "me",
@@ -128,13 +92,31 @@ async function sendEmail(task: TaskType) {
           raw: email,
         }
       });
+
+      if (response) {
+        await prisma.outbox.update({
+          where: {
+            id: task.id,
+          },
+          data: {
+            status: "completed"
+          }
+        })
+      } else {
+        await prisma.outbox.update({
+          where: {
+            id: task.id,
+          },
+          data: {
+            status: "failed"
+          }
+        })
+      }
       console.log("response ------------------>", response)
     } else {
-      console.log("no email")
+      console.log("No email")
     }
-
-
   } catch (error) {
-    console.log("Something went wrong sendEmail", error)
+    console.error("Something went wrong sendEmail", error)
   }
 }

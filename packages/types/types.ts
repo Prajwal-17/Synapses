@@ -29,3 +29,22 @@ export type ActionsType = {
   config: JsonValue,
   stepNo: number,
 }
+
+export type TaskType = {
+  id: string,
+  userId: string,
+  workflowId: string,
+  stepNo: number,
+  appType: string,
+  connectionId: string,
+  eventType: string,
+  payload: EmailPayloadType
+  status: string
+}
+
+export type EmailPayloadType = {
+  to: string,
+  from: string,
+  subject: string,
+  body: string,
+}

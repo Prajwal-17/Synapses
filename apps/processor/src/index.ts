@@ -35,7 +35,11 @@ async function getWorkflows() {
     const emailFilteredWorkflows = result.filter((item) => item.Trigger?.eventType === "LISTEN-EMAIL")
 
     if (emailFilteredWorkflows.length > 0) {
-      listenEmailTrigger(emailFilteredWorkflows)
+      try {
+        await listenEmailTrigger(emailFilteredWorkflows)
+      } catch (error) {
+        console.error("Could not fetch email", error)
+      }
     }
 
   } catch (error) {
@@ -48,18 +52,18 @@ async function processOutbox() {
   try {
     console.log("Fetching pending actions")
 
-    const pendingActions = await prisma.outbox.findMany({
+    const actions = await prisma.outbox.findMany({
       where: {
         status: "pending"
       },
       take: 20,
     });
 
-    if (pendingActions.length === 0) return;
+    if (actions.length === 0) return;
 
     await producer.connect();
 
-    const messages = pendingActions.map((item) => ({
+    const messages = actions.map((item) => ({
       key: item.workflowId,
       value: JSON.stringify({
         id: item.id,
@@ -79,10 +83,21 @@ async function processOutbox() {
       messages
     });
 
-    console.log("added to kafka")
+    const outboxIds = actions.map((item) => item.id)
+
+    await prisma.outbox.updateMany({
+      where: {
+        id: {
+          in: outboxIds,
+        }
+      },
+      data: {
+        status: "inqueue"
+      }
+    });
 
   } catch (error) {
-    console.log("Something went wrong in processor", error)
+    console.error("Something went wrong in processor", error)
   }
 }
 
