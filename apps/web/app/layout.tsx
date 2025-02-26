@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
 import NavbarWrapper from "@/providers/NavbarWrapper";
 import SidebarWarpper from "@/providers/SidebarWrapper";
-import { Toaster } from "@repo/ui/components/sonner"
+import { Toaster } from "sonner"
 import { authOptions } from "@/lib/authOptions";
 
 const dm_sans = DM_Sans({
@@ -17,7 +17,7 @@ const dm_sans = DM_Sans({
 
 export const metadata: Metadata = {
   title: "HyperPipe",
-  description: "Automated your workflows",
+  description: "Automate your workflows",
 };
 
 export default async function RootLayout({
@@ -37,12 +37,10 @@ export default async function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark">
             <div className="min-h-screen">
               <NavbarWrapper />
-              <div>
-                <div className="flex">
-                  <SidebarWarpper />
-                  <main className="flex-1 mt-16 ml-14 px-2">
-                    {children}
-                  </main>
+              <div className="flex">
+                <SidebarWarpper />
+                <div className="flex-1 mt-16 ml-14 px-2">
+                  {children}
                 </div>
               </div>
             </div>

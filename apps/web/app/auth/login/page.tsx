@@ -11,11 +11,14 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card"
-import { Separator } from "@radix-ui/react-separator";
+} from "@repo/ui"
+import { Separator } from "@repo/ui";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { Label } from "@repo/ui";
+import { Input } from "@repo/ui";
+import { Button } from "@repo/ui";
 
 type Inputs = {
   email: string,
@@ -80,60 +83,83 @@ export default function Login() {
     }
   }
 
-  return (<>
-    <div className=" w-full mx-5 my-10 h-[calc(100vh-4rem)] grid place-items-center ">
-      <Card className="md:w-[550px] px-3 py-1">
-        <CardHeader>
-          <CardTitle className="text-3xl">Hi, Welcome Back</CardTitle>
-          <CardDescription className="text-lg">Log In to your account</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <CardContent className="flex flex-col gap-4">
-            <div className="space-y-4">
-              <div onClick={handleGoogle} className="flex justify-start items-center px-3 py-2 cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-100 dark:text-black dark:hover:bg-slate-300 rounded-xl" >
+  return (
+    <>
+      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] " >
+        <Card className="w-full max-w-md bg-background shadow-lg border-slate-200 dark:border-slate-800">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center font-bold">Welcome back</CardTitle>
+            <CardDescription className="text-md text-center text-slate-500">Sign in to your account to continue</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-md">Email</Label>
+                <Input
+                  id="email"
+                  placeholder="name@example.com"
+                  className="py-3 rounded-lg"
+                  type="email"
+                  {...register("email", { required: true })}
+                />
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="password" className="text-md">Password</Label>
+                  <Link href="/" className="hover:underline text-sm">
+                    Forgot Password?
+                  </Link>
+                </div>
+                <Input
+                  id="password"
+                  className="py-3 rounded-lg"
+                  type="password"
+                  {...register("password", { required: true })}
+                />
+              </div>
+              <Button type="submit" className="w-full ">
+                Sign in
+              </Button>
+            </form>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <Separator className="w-full" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+              </div>
+            </div>
+
+            <div className="flex items-center w-full gap-2">
+              <Button
+                variant="outline"
+                className="w-full bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 transition-colors"
+                onClick={handleGoogle}
+              >
                 <FcGoogle size="27" />
-                <span className="w-full text-center">Continue with Google</span>
-              </div>
-              <div onClick={handleGithub} className="flex justify-start items-center px-3 py-2 cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-100 dark:text-black dark:hover:bg-slate-300 rounded-xl">
+                Google
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full bg-white hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-900 transition-colors"
+                onClick={handleGithub}
+              >
                 <SiGithub size="27" />
-                <span className="w-full text-center">Continue with Github</span>
-              </div>
-            </div>
-            <div className="relative flex items-center my-1">
-              <span className="absolute left-1/2 -translate-x-1/2 bg-white px-3 text-gray-500 text-sm dark:bg-background">or</span>
-              <Separator orientation="horizontal" className="w-full h-[1px] bg-gray-300 dark:bg-gray-200" />
-            </div>
-            <div>
-              <label htmlFor="email" className="leading-10">*Email</label>
-              <input
-                id="email"
-                placeholder="Enter your email"
-                className="w-full px-2 py-3 font-medium border-[1px] border-slate-700 rounded-lg"
-                type="email"
-                {...register("email", { required: true })}
-              />
-            </div>
-            <div>
-              <label htmlFor="password">*Password</label>
-              <input
-                id="password"
-                className="w-full px-2 py-3 font-medium border-[1px] border-slate-700 rounded-lg"
-                type="password"
-                {...register("password", { required: true })}
-              />
-            </div>
-            <div className="w-full py-2 text-lg font-semibold rounded-xl text-center bg-slate-200 hover:bg-slate-300 hover:cursor-pointer dark:bg-slate-100 dark:text-black dark:hover:bg-slate-300 ">
-              <button type="submit">Log In</button>
+                Github
+              </Button>
             </div>
           </CardContent>
-        </form>
-        <CardFooter>
-          <div>
-            Don &apos; t have an account? <Link className="text-blue-500 underline" href="/auth/sign-up">Sign Up</Link>
-          </div>
-        </CardFooter>
-      </Card>
-    </div >
-  </>
+          <CardFooter className="flex flex-col space-y-4">
+            <div className="text-center text-sm">
+              Don&apos;t have an account?{" "}
+              <Link href="/auth/sign-up" className="text-primary hover:underline">
+                Sign up
+              </Link>
+            </div>
+          </CardFooter>
+        </Card>
+      </div>
+    </>
   );
 }

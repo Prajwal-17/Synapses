@@ -7,6 +7,17 @@
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
+  "dependencies": {
+    "@auth/core": "0.34.2",
+    "@auth/prisma-adapter": "^2.7.4",
+    "@repo/db": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@tabler/icons-react": "^3.28.1",
+    "@xyflow/react": "^12.3.6",
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3"
+  },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",

@@ -3,10 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./globals.css": "./src/styles/globals.css",
     "./utils.ts": "./src/lib/utils.ts",
     "./tailwind-config": "./src/tailwind.config.js",
-    "./components/*": "./src/components/*.tsx"
+    ".":"./src/index.ts"
   },
   "scripts": {
     "build": "tsc -b --emitDeclarationOnly",
@@ -22,7 +21,7 @@
     "@types/react-dom": "19.0.3",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "tailwindcss": "3",
+    "tailwindcss": "^3.4.1",
     "typescript": "5.7.3"
   },
   "dependencies": {

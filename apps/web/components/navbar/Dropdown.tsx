@@ -7,9 +7,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@repo/ui/components/dropdown-menu"
+} from "@repo/ui"
 import { signOut, useSession } from "next-auth/react"
-import { Separator } from "@repo/ui/components/separator"
+import { Separator } from "@repo/ui"
 import Link from "next/link"
 
 export const DropDown = () => {
