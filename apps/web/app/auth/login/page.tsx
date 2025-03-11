@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { Label } from "@repo/ui";
 import { Input } from "@repo/ui";
 import { Button } from "@repo/ui";
+import { motion } from "motion/react"
 
 type Inputs = {
   email: string,
@@ -84,8 +85,13 @@ export default function Login() {
   }
 
   return (
-    <>
-      <div className="flex flex-col justify-center items-center min-h-[calc(100vh-4rem)] " >
+    <div className="h-full flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: "easeIn" }}
+        className="flex flex-col justify-center items-center py-8 mx-5 w-full"
+      >
         <Card className="w-full max-w-md bg-background shadow-lg border-slate-200 dark:border-slate-800">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center font-bold">Welcome back</CardTitle>
@@ -159,7 +165,7 @@ export default function Login() {
             </div>
           </CardFooter>
         </Card>
-      </div>
-    </>
+      </motion.div>
+    </div>
   );
 }

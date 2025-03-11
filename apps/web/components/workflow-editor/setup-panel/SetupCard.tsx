@@ -5,9 +5,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
+} from "@repo/ui";
 import { IconX } from "@tabler/icons-react"
-import { Separator } from "@radix-ui/react-separator"
+import { Separator } from "@repo/ui"
 import { NodeData } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import ConfigureData from "../configure-panel/ConfigureCard";

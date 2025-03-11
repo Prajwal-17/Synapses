@@ -2,11 +2,31 @@
 
 import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSession } from "next-auth/react"
-import { useEffect } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Create() {
 
   const { data: session } = useSession();
+  const [workflowURL, setWorkflowURL] = useState("");
+
+  useEffect(() => {
+    const fetchWorkflow = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/${session?.user.id}/workflows`, {
+          method: "GET",
+        });
+        const data = await response.json();
+        setWorkflowURL(`http://localhost:3000/workflow/${data.workflow.userId}/${data.workflow.id}`)
+        // console.log(data);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchWorkflow()
+  }, [])
+  // console.log(workflow)
 
   const createWorkflow = async () => {
     try {
@@ -14,6 +34,7 @@ export default function Create() {
         method: "POST",
       });
       const data = await response.json();
+      setWorkflowURL(`http://localhost:3000/workflow/${data.workflow.userid}/${data.workflow.id}`)
       console.log(data);
 
     } catch (error) {
@@ -37,6 +58,11 @@ export default function Create() {
     </button>
     <button >
       Test
+    </button>
+    <button className="bg-gray-300 p-2 rounded-xl">
+      <Link href={workflowURL}>
+        Go To workflow editor
+      </Link>
     </button>
   </>)
 }

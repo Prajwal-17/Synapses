@@ -13,6 +13,7 @@ export const Navbar = () => {
   const { theme, setTheme } = useTheme()
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar)
   const pathname = usePathname();
+  const showMenu = !["/auth/login", "/auth/sign-up"].includes(pathname)
 
   return (
     <>
@@ -21,8 +22,7 @@ export const Navbar = () => {
 
           <div className="flex items-center">
             {
-              pathname !== "/" &&
-              <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
+              showMenu && <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
                 <Menu />
               </button>
             }

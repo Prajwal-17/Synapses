@@ -4,10 +4,9 @@ import { getServerSession } from "next-auth";
 import SessionProviderWrapper from "../providers/SessionProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { DM_Sans } from "next/font/google"
-import NavbarWrapper from "@/providers/NavbarWrapper";
-import SidebarWarpper from "@/providers/SidebarWrapper";
 import { Toaster } from "sonner"
 import { authOptions } from "@/lib/authOptions";
+import AppLayout from "@/components/AppLayout";
 
 const dm_sans = DM_Sans({
   variable: "--font-dm-sans",
@@ -30,20 +29,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className={`${dm_sans.className} antialiased  `}
-      >
+      <body className={`${dm_sans.className} antialiased`}>
         <SessionProviderWrapper session={session}>
           <ThemeProvider attribute="class" defaultTheme="dark">
-            <div className="min-h-screen">
-              <NavbarWrapper />
-              <div className="flex">
-                <SidebarWarpper />
-                <div className="flex-1 mt-16 ml-14 px-2">
-                  {children}
-                </div>
-              </div>
-            </div>
+            <AppLayout>
+              {children}
+            </AppLayout>
             <Toaster />
           </ThemeProvider>
         </SessionProviderWrapper>

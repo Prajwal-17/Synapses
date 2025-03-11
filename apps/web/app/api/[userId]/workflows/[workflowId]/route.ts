@@ -122,6 +122,7 @@ export async function POST(
     const triggers = [];
     const actions = [];
 
+    //fix empty string below 
     for (const step of body as NodeData[]) {
       if (step.type === "trigger") {
         triggers.push({
@@ -131,14 +132,18 @@ export async function POST(
           update: {
             workflowId: workflow.id,
             appType: step.app,
+            connectionId: "",
             type: step.type,
+            eventType: "",
             config: step.config,
           },
           create: {
             id: step.nodeId,
             workflowId: workflow.id,
             appType: step.app,
+            connectionId: "",
             type: step.type,
+            eventType: "",
             config: step.config,
           }
         })
@@ -150,6 +155,7 @@ export async function POST(
           update: {
             workflowId: workflowId,
             appType: step.app,
+            connectionId: "",
             type: step.type,
             eventType: "",
             config: step.config,
@@ -159,8 +165,9 @@ export async function POST(
             id: step.nodeId,
             workflowId: workflowId,
             appType: step.app,
-            eventType: "",
+            connectionId: "",
             type: step.type,
+            eventType: "",
             config: step.config,
             stepNo: step.stepNo,
           }

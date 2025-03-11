@@ -10,7 +10,7 @@ export const Sidebar = () => {
   const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen)
 
   return (<>
-    <div className={`${isSidebarOpen ? "w-52 items-start" : "w-16"} group w-16 h-screen py-7 px-1 fixed left-0 top-16 z-50 flex flex-col items-center hover:items-start hover:text-black hover:w-52 hover:px-3 gap-5 text-black bg-white dark:bg-background dark:text-white shadow-lg`}>
+    <div className={`${isSidebarOpen ? "w-52 items-start" : "w-16"} group w-16 h-screen py-7 px-1 fixed left-0 top-16 z-50 hidden sm:flex flex-col items-center hover:items-start hover:text-black hover:w-52 hover:px-3 gap-5 text-black bg-white dark:bg-background dark:text-white shadow-lg`}>
       <div className={`${isSidebarOpen ? "w-full" : ""} bg-slate-200 dark:bg-slate-900 px-2 py-2 rounded-lg hover:cursor-pointer group-hover:w-full flex justify-center gap-2 hover:bg-slate-300 dark:hover:bg-slate-800`}>
         <Plus />
         <span className={`${isSidebarOpen ? "block" : "hidden"} group-hover:block font-semibold`}>Create</span>
@@ -47,7 +47,7 @@ export const Sidebar = () => {
       <Separator orientation="horizontal" className="w-full h-[1px] bg-gray-200 dark:bg-gray-700" />
     </div>
 
-    <Separator orientation="vertical" className="w-[1px] h-screen bg-gray-200 dark:bg-gray-700" />
+    {/* <Separator orientation="vertical" className="w-[1px] h-screen bg-gray-200 dark:bg-gray-700" /> */}
 
   </>)
 }

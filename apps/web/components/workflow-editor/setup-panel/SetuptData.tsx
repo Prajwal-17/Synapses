@@ -2,7 +2,7 @@
 
 import {
   CardContent,
-} from "@repo/ui/components/card";
+} from "@repo/ui";
 import {
   Select,
   SelectContent,
@@ -10,11 +10,11 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/ui/components/select";
+} from "@repo/ui";
 import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import Image from "next/image";
-import { Label } from "@radix-ui/react-label";
+import { Label } from "@repo/ui";
 import { integrations } from "@/constants/Integrations";
 
 const SetuptData = ({ currData }: { currData: NodeData }) => {
