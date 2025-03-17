@@ -1,11 +1,11 @@
 import { useReactFlow } from "@xyflow/react";
-import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
+import { useWorkflowStore } from "@/store/workflowStore";
 
 export const useAddNode = () => {
 
   const { setNodes, setEdges, getNodes } = useReactFlow();
-  const setNodeData = usePanelDetails((state) => state.setNodeData)
+  const addNode = useWorkflowStore((state) => state.addNode)
   const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
   const showPanel = useSelectNodeStore((state) => state.showPanel);
@@ -21,6 +21,7 @@ export const useAddNode = () => {
           id: `${nodes.length + 1}`,
           position: {
             x: 0,
+            //@ts-ignore
             y: nodes[nodes.length - 1].position.y + 100
           },
           data: {
@@ -32,6 +33,7 @@ export const useAddNode = () => {
           id: `${nodes.length + 2}`,
           position: {
             x: 0,
+            //@ts-ignore
             y: nodes[nodes.length - 1].position.y + 200,
           },
           data: {
@@ -50,14 +52,14 @@ export const useAddNode = () => {
       return [
         ...edges,
         {
-          id: `e${Number(lastActionNode.id) + 1}-${Number(lastActionNode.id) + 2}`,
-          source: `${lastActionNode.id}`,
-          target: `${Number(lastActionNode.id) + 1}`
+          id: `e${Number(lastActionNode?.id) + 1}-${Number(lastActionNode?.id) + 2}`,
+          source: `${lastActionNode?.id}`,
+          target: `${Number(lastActionNode?.id) + 1}`
         }
       ]
     });
 
-    setNodeData()
+    addNode()
     setSelectedNode(getNodes().length)
 
     if (!showPanel) {

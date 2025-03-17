@@ -10,7 +10,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const showSidebar = !["/auth/login", "/auth/sign-up"].includes(pathname)
   const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen)
-  console.log(isSidebarOpen)
+  console.log("isSidebaropen", isSidebarOpen)
 
   return (
     <>

@@ -28,7 +28,7 @@ async function main() {
 
           const task = JSON.parse(message.value?.toString() || "");
 
-          if (task.eventType === "send_email") {
+          if (task.eventType === "SEND_EMAIL") {
             await sendEmail(task);
           } else {
             console.log("Event type not matched")

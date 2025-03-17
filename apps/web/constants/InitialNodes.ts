@@ -1,17 +1,17 @@
 export const initialNodes = [
   {
-    id: '1',
+    id: '0',
     position: {
       x: 0,
       y: 0
     },
     data: {
-      label: 'Node 1'
+      label: 'Trigger Node'
     },
     type: "triggerNode"
   },
   {
-    id: '2',
+    id: '1',
     position: {
       x: 0,
       y: 100

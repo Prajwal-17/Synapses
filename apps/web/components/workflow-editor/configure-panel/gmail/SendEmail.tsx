@@ -1,37 +1,25 @@
 "use client"
 
 import { Input } from "@repo/ui";
-import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { useState } from "react";
+import { NodeDataType } from "@repo/types";
+import { useWorkflowStore } from "@/store/workflowStore";
 
-const SendEmail = ({ currData }: { currData: NodeData }) => {
-
-  const [config, setConfig] = useState({
-    to: "",
-    cc: "",
-    from: "",
-    subject: "",
-    body: ""
-  });
-
+const SendEmail = ({ currNode }: { currNode: NodeDataType }) => {
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
-  const updateNodeData = usePanelDetails((state) => state.updateNodeData)
-
-  console.log("data inside send email ", currData)
+  const updateNodeData = useWorkflowStore((state) => state.updateNodeData)
 
   return (<>
     <div className="space-y-3">
 
       <div className="space-y-3">
-        <span>To{config.to}</span>
+        <span>To</span>
         <Input
           type="email"
-          value={currData.config.to}
+          value={currNode.payload.to}
           onChange={(e) => {
-            const updatedConfig = { ...config, to: e.target.value }
-            setConfig(updatedConfig)
-            updateNodeData(currData.nodeId, { ...currData, config: updatedConfig })
+            const updatedPayload = { ...currNode.payload, to: e.target.value }
+            updateNodeData(currNode.stepNo, { ...currNode, payload: updatedPayload })
           }}
         />
       </div>
@@ -39,11 +27,10 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
       <div>
         <span>Cc</span>
         <Input
-          value={currData.config.cc}
+          value={currNode.payload.cc}
           onChange={(e) => {
-            const updatedConfig = { ...config, cc: e.target.value }
-            setConfig(updatedConfig)
-            updateNodeData(currData.nodeId, { ...currData, config: updatedConfig })
+            const updatedPayload = { ...currNode.payload, cc: e.target.value }
+            updateNodeData(currNode.stepNo, { ...currNode, payload: updatedPayload })
           }}
         />
       </div>
@@ -51,11 +38,10 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
       <div>
         <span>From</span>
         <Input
-          value={currData.config.from}
+          value={currNode.payload.from}
           onChange={(e) => {
-            const updatedConfig = { ...config, from: e.target.value }
-            setConfig(updatedConfig)
-            updateNodeData(currData.nodeId, { ...currData, config: updatedConfig })
+            const updatedPayload = { ...currNode.payload, from: e.target.value }
+            updateNodeData(currNode.stepNo, { ...currNode, payload: updatedPayload })
           }}
         />
       </div>
@@ -63,11 +49,10 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
       <div>
         <span>Subject</span>
         <Input
-          value={currData.config.subject}
+          value={currNode.payload.subject}
           onChange={(e) => {
-            const updatedConfig = { ...config, subject: e.target.value }
-            setConfig(updatedConfig)
-            updateNodeData(currData.nodeId, { ...currData, config: updatedConfig })
+            const updatedPayload = { ...currNode.payload, subject: e.target.value }
+            updateNodeData(currNode.stepNo, { ...currNode, payload: updatedPayload })
           }}
         />
       </div>
@@ -75,11 +60,10 @@ const SendEmail = ({ currData }: { currData: NodeData }) => {
       <div>
         <span>Body</span>
         <Input
-          value={currData.config.body}
+          value={currNode.payload.body}
           onChange={(e) => {
-            const updatedConfig = { ...config, body: e.target.value }
-            setConfig(updatedConfig)
-            updateNodeData(currData.nodeId, { ...currData, config: updatedConfig })
+            const updatedPayload = { ...currNode.payload, body: e.target.value }
+            updateNodeData(currNode.stepNo, { ...currNode, payload: updatedPayload })
           }}
         />
       </div>

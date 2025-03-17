@@ -5,7 +5,8 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clear:deps":"rm -rf node_modules ./pnpm-lock.yaml  && pnpm -r exec rm -rf node_modules .next dist"
   },
   "dependencies": {
     "@auth/core": "0.34.2",

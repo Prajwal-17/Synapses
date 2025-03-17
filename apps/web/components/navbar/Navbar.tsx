@@ -22,12 +22,12 @@ export const Navbar = () => {
 
           <div className="flex items-center">
             {
-              showMenu && <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
+              showMenu && <div onClick={toggleSidebar} className="text-center hover:cursor-pointer">
                 <Menu />
-              </button>
+              </div>
             }
             <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
-              HyperPipe
+              Synapses
             </Link>
           </div>
 

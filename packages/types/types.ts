@@ -1,32 +1,61 @@
-import { JsonValue } from "@prisma/client/runtime/library";
+import { JsonValue } from "@prisma/client/runtime/library"
 
-export type WorkflowType = {
+export type ApiWorkflowType = {
   id: string,
   userId: string,
   totalActionSteps: number,
-  lastCheckedAt: Date,
-  Trigger: TriggerType | null,
-  actions: ActionsType[]
-};
-
-export type TriggerType = {
-  id: string,
-  workflowId: string,
-  connectionId: string,
-  appType: string,
-  type: string,
-  eventType: String,
-  config: JsonValue,
+  Trigger: TriggerType,
+  actions: ActionType[],
+  lastCheckedAt?: Date,
 }
 
-export type ActionsType = {
+export type TriggerType = {
   id: string,
   workflowId: string,
   appType: string,
   connectionId: string,
   type: string,
   eventType: string,
-  config: JsonValue,
+  payload: Record<string, any>,
+  stepNo: number,
+}
+
+export type ActionType = {
+  id: string,
+  workflowId: string,
+  appType: string,
+  connectionId: string,
+  type: string,
+  eventType: string,
+  payload: Record<string, any>,
+  stepNo: number,
+}
+
+export enum NodeType {
+  trigger = "trigger",
+  action = "action"
+}
+
+export type WorkflowStateType = {
+  nodeData: NodeDataType[],
+  nodeIds: string[],
+  orignalNodeData: Record<string, any>,
+
+  addNode: () => void,
+  setNodesFromApi: (nodeArray: NodeDataType[]) => void,
+  updateNodeData: (stepNo: number, updatedData: Record<string, any>) => void
+  getChanges: () => void,
+  saveChanges: () => void,
+}
+
+export type NodeDataType = {
+  id: string,
+  workflowId: string,
+  appType: string,
+  connectionId: string,
+  type: string,
+  eventType: string,
+  payload: Record<string, any>,
   stepNo: number,
 }
 

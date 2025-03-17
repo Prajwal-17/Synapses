@@ -15,7 +15,7 @@ const dm_sans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "HyperPipe",
+  title: "Synapses",
   description: "Automate your workflows",
 };
 

@@ -1,6 +1,5 @@
 "use client"
 
-import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSession } from "next-auth/react"
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -18,7 +17,6 @@ export default function Create() {
         });
         const data = await response.json();
         setWorkflowURL(`http://localhost:3000/workflow/${data.workflow.userId}/${data.workflow.id}`)
-        // console.log(data);
       } catch (error) {
         console.log(error)
       }
@@ -26,7 +24,6 @@ export default function Create() {
 
     fetchWorkflow()
   }, [])
-  // console.log(workflow)
 
   const createWorkflow = async () => {
     try {
@@ -41,12 +38,6 @@ export default function Create() {
       console.log(error)
     }
   }
-
-  const getChanges = usePanelDetails((state) => state.getChanges)
-
-  useEffect(() => {
-    console.log(getChanges())
-  }, [getChanges])
 
   return (<>
     <div>

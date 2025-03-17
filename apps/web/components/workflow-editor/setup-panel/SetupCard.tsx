@@ -8,12 +8,12 @@ import {
 } from "@repo/ui";
 import { IconX } from "@tabler/icons-react"
 import { Separator } from "@repo/ui"
-import { NodeData } from "@/store/panelDetailsStore";
+import { NodeDataType } from "@repo/types";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import ConfigureData from "../configure-panel/ConfigureCard";
 import SetuptData from "./SetuptData";
 
-export const SetupCard = ({ currData }: { currData: NodeData }) => {
+export const SetupCard = ({ currNode }: { currNode: NodeDataType }) => {
 
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
   const panelStep = useSelectNodeStore((state) => state.panelStep);
@@ -25,7 +25,7 @@ export const SetupCard = ({ currData }: { currData: NodeData }) => {
       <CardHeader className="px-3 py-3">
         <CardTitle className="p-1 flex items-center justify-between">
           <span className="text-xl font-bold">
-            {currData.stepNo}. {currData.event === "" ? "Select an event" : `${currData.event}`}
+            {currNode.stepNo + 1}. {currNode.eventType === "" ? "Select an event" : `${currNode.eventType}`}
           </span>
           <button onClick={() => setShowPanel("close")}>
             <IconX stroke={2} />
@@ -51,7 +51,7 @@ export const SetupCard = ({ currData }: { currData: NodeData }) => {
           />
 
           <button
-            disabled={!currData.app}
+            disabled={!currNode.appType}
             onClick={() => setPanelStep("configure")}
             className="flex justify-center items-center gap-1 border-blue-900"
           >
@@ -68,9 +68,9 @@ export const SetupCard = ({ currData }: { currData: NodeData }) => {
 
       {
         panelStep === "setup" ? (
-          <SetuptData currData={currData} />
+          <SetuptData currNode={currNode} />
         ) : (
-          <ConfigureData currData={currData} />
+          <ConfigureData currNode={currNode} />
         )
       }
 

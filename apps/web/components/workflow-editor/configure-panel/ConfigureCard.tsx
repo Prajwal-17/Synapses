@@ -3,26 +3,26 @@
 import {
   CardContent,
 } from "@repo/ui";
-import { NodeData } from "@/store/panelDetailsStore";
+import { NodeDataType } from "@repo/types";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";
 import Commit from "./github/Commit";
 import Pullrequest from "./github/Pullrequest";
 
-const ConfigureData = ({ currData }: { currData: NodeData }) => {
+const ConfigureData = ({ currNode }: { currNode: NodeDataType }) => {
 
   const renderConfigureComponent = (selectedEvent: string) => {
     switch (selectedEvent) {
-      case "Listen-email":
+      case "LISTEN_EMAIL":
         return <ListenEmail />;
 
-      case "Send-email":
-        return <SendEmail currData={currData} />;
+      case "SEND_EMAIL":
+        return <SendEmail currNode={currNode} />;
 
-      case "Commit":
+      case "COMMIT":
         return <Commit />;
 
-      case "Pull-request":
+      case "PULL_REQUEST":
         return <Pullrequest />;
 
       default:
@@ -34,7 +34,7 @@ const ConfigureData = ({ currData }: { currData: NodeData }) => {
 
     <CardContent className="h-[330px] flex flex-col justify-evenly overflow-auto">
 
-      {currData.event && renderConfigureComponent(currData.event)}
+      {currNode.eventType && renderConfigureComponent(currNode.eventType)}
 
     </CardContent>
   </>)

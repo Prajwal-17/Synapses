@@ -7,14 +7,14 @@ export const integrations = [
     actions: [
       {
         eventId: 1,
-        eventValue: "Listen-email",
-        eventLabel: "Listen Email",
+        eventValue: "LISTEN_EMAIL",
+        eventLabel: "Listen Emails",
         type: "trigger",
         description: "Triggers to new emails",
       },
       {
         eventId: 2,
-        eventValue: "Send-email",
+        eventValue: "SEND_EMAIL",
         eventLabel: "Send Email",
         type: "trigger",
         description: "Create and send an email",
@@ -29,14 +29,14 @@ export const integrations = [
     actions: [
       {
         eventId: 1,
-        eventValue: "Commit",
+        eventValue: "COMMIT",
         eventLabel: "Commit",
         type: "action",
         description: "some desc",
       },
       {
         eventId: 2,
-        eventValue: "Pull-request",
+        eventValue: "PULL_REQUEST",
         eventLabel: "Pull request",
         type: "action",
         description: "random data pull requstt lsdkflsajdfsfd",

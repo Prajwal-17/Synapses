@@ -67,7 +67,8 @@ model Trigger {
   connectionId String
   type         NodeType @default(trigger)
   eventType    String
-  config       Json
+  payload      Json
+  stepNo       Int
 
   workflow  Workflow @relation(fields: [workflowId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -85,7 +86,7 @@ model Action {
   connectionId String
   type         NodeType @default(action)
   eventType    String
-  config       Json
+  payload      Json
   stepNo       Int
 
   Workflow Workflow? @relation(fields: [workflowId], references: [id], onDelete: Cascade)

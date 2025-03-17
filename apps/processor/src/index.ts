@@ -3,6 +3,7 @@ import * as cron from "node-cron"
 import dotenv from "dotenv"
 import { listenEmailTrigger } from "./listenEmailTrigger";
 import { Kafka } from "kafkajs"
+import { ApiWorkflowType } from "@repo/types";
 
 dotenv.config()
 const POLLING_INTERVAL = 2000;
@@ -32,11 +33,11 @@ async function getWorkflows() {
       },
     });
 
-    const emailFilteredWorkflows = result.filter((item) => item.Trigger?.eventType === "LISTEN-EMAIL")
+    const emailFilteredWorkflows = result.filter((item) => item.Trigger?.eventType === "LISTEN_EMAIL")
 
     if (emailFilteredWorkflows.length > 0) {
       try {
-        await listenEmailTrigger(emailFilteredWorkflows)
+        await listenEmailTrigger(emailFilteredWorkflows as ApiWorkflowType[])
       } catch (error) {
         console.error("Could not fetch email", error)
       }

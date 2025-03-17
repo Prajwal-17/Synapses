@@ -7,7 +7,7 @@ import {
 } from "@xyflow/react";
 import { IconExclamationCircleFilled } from '@tabler/icons-react';
 import { useSelectNodeStore } from "@/store/selectNodeStore";
-import { usePanelDetails } from "@/store/panelDetailsStore";
+import { useWorkflowStore } from "@/store/workflowStore";
 import Image from "next/image";
 
 type TriggerNodeProps = {
@@ -18,7 +18,7 @@ const TriggerNode = ({ id }: TriggerNodeProps) => {
 
   const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
-  const nodeData = usePanelDetails((state) => state.nodeData)
+  const nodeData = useWorkflowStore((state) => state.nodeData)
 
   return (
     <>
@@ -39,7 +39,7 @@ const TriggerNode = ({ id }: TriggerNodeProps) => {
         <div className="text-sm text-[12px] font-medium mb-2">
           <span className="font-bold text-gray-800 dark:text-gray-100">1. </span>
           <span className="text-gray-600 dark:text-gray-300">
-            {nodeData[0].event ? nodeData[0].event : "Choose a trigger for your flow"}
+            {nodeData[0]?.eventType ? nodeData[0].eventType : "Choose a trigger for your flow"}
           </span>
         </div>
 
@@ -49,13 +49,13 @@ const TriggerNode = ({ id }: TriggerNodeProps) => {
 
           <div className="flex items-center gap-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md px-2 py-0.5 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition">
             <Image
-              src={`/icons/${nodeData[0].app ? nodeData[0].app.toLowerCase() + ".svg" : "zap.svg"}`}
+              src={`/icons/${nodeData[0]?.appType ? nodeData[0].appType.toLowerCase() + ".svg" : "zap.svg"}`}
               width={12}
               height={12}
-              alt={nodeData[0].app}
+              alt={nodeData[0]?.appType as string}
             />
             <span className="text-[10px] font-medium text-gray-800 dark:text-gray-200">
-              {nodeData[0].app ? nodeData[0].app : "Trigger"}
+              {nodeData[0]?.appType ? nodeData[0]?.appType : "Trigger"}
             </span>
           </div>
         </div>

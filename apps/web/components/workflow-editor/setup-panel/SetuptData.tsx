@@ -11,16 +11,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@repo/ui";
-import { NodeData, usePanelDetails } from "@/store/panelDetailsStore";
+import { useWorkflowStore } from "@/store/workflowStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import Image from "next/image";
 import { Label } from "@repo/ui";
 import { integrations } from "@/constants/Integrations";
+import { NodeDataType } from "@repo/types";
 
-const SetuptData = ({ currData }: { currData: NodeData }) => {
+const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
 
   const setPanelStep = useSelectNodeStore((state) => state.setPanelStep)
-  const updateNodeData = usePanelDetails((state) => state.updateNodeData);
+  const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
 
   return (<>
     <CardContent className="space-y-6">
@@ -29,9 +30,9 @@ const SetuptData = ({ currData }: { currData: NodeData }) => {
           App
         </Label>
         <Select
-          value={currData.app}
+          value={currNode.appType}
           onValueChange={(value) => {
-            updateNodeData(currData.nodeId, { app: value });
+            updateNodeData(currNode.stepNo, { app: value });
           }}
         >
           <SelectTrigger id="app" className="w-full">
@@ -63,20 +64,20 @@ const SetuptData = ({ currData }: { currData: NodeData }) => {
 
       <div className="space-y-2">
         <Label
-          htmlFor={currData.type === "trigger" ? "trigger-event" : "action-event"}
+          htmlFor={currNode.type === "trigger" ? "trigger-event" : "action-event"}
           className="font-semibold"
         >
-          {currData.type === "trigger" ? "Trigger Event" : "Action Event"}
+          {currNode.type === "trigger" ? "Trigger Event" : "Action Event"}
         </Label>
         <Select
-          disabled={!currData.app}
-          value={currData.event}
+          disabled={!currNode.appType}
+          value={currNode.eventType}
           onValueChange={(value) => {
-            updateNodeData(currData.nodeId, { event: value });
+            updateNodeData(currNode.stepNo, { event: value });
           }}
         >
           <SelectTrigger
-            id={currData.type === "trigger" ? "trigger-event" : "action-event"}
+            id={currNode.type === "trigger" ? "trigger-event" : "action-event"}
             className="w-full"
           >
             <SelectValue className="bg-white" placeholder="Choose Event" />
@@ -84,7 +85,7 @@ const SetuptData = ({ currData }: { currData: NodeData }) => {
           <SelectContent className="bg-white">
             <SelectGroup className="bg-white">
               {integrations
-                .filter((item) => currData.app === item.appValue)
+                .filter((item) => currNode.appType === item.appValue)
                 .map((item) =>
                   item.actions.map((actionItem) => (
                     <SelectItem
@@ -114,13 +115,13 @@ const SetuptData = ({ currData }: { currData: NodeData }) => {
 
       <div className="mt-6">
         <button
-          disabled={!currData.event}
+          disabled={!currNode.eventType}
           onClick={() => {
             console.log("arrived")
             setPanelStep("configure")
             console.log("updated")
           }}
-          className={`w-full rounded-lg py-2 text-white ${currData.event ? "bg-black hover:bg-gray-800" : "bg-gray-400 cursor-not-allowed"
+          className={`w-full rounded-lg py-2 text-white ${currNode.eventType ? "bg-black hover:bg-gray-800" : "bg-gray-400 cursor-not-allowed"
             }`}
         >
           Continue

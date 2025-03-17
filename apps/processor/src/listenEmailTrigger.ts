@@ -1,17 +1,17 @@
-import { ActionsType, WorkflowType } from "@repo/types";
+import { ActionType, ApiWorkflowType } from "@repo/types";
 import { prisma } from "./db";
 import { getTokenFromDB, updateAccessToken } from "./tokenFncs";
 import { google } from "googleapis";
 
 const gmail = google.gmail("v1");
 
-export async function listenEmailTrigger(emailFilteredWorkflows: WorkflowType[]) {
+export async function listenEmailTrigger(emailFilteredWorkflows: ApiWorkflowType[]) {
   try {
     for (const workflow of emailFilteredWorkflows) {
 
       const nowTime = new Date().getTime();
       const triggerInterval = 15 * 60 * 1000;
-      const lastCheckedAt = workflow.lastCheckedAt.getTime();
+      const lastCheckedAt = workflow.lastCheckedAt?.getTime();
 
       // console.log(nowTime - lastCheckedAt >= triggerInterval)
       if (nowTime - lastCheckedAt >= triggerInterval) {
@@ -117,7 +117,7 @@ async function getEmailMessages(messagesIds: any, accessToken: string) {
   }
 }
 
-async function addTasksToOutbox(workflow: WorkflowType, emailLength: number) {
+async function addTasksToOutbox(workflow: ApiWorkflowType, emailLength: number) {
 
   if (!workflow?.actions) {
     console.error(`Workflow ${workflow.id} actions are undefined, cannot add tasks to outbox.`);
@@ -130,14 +130,14 @@ async function addTasksToOutbox(workflow: WorkflowType, emailLength: number) {
   }
 
   try {
-    const task = workflow.actions.map((item: ActionsType) => ({
+    const task = workflow.actions.map((item: ActionType) => ({
       userId: workflow.userId,
       workflowId: workflow.id,
       stepNo: item.stepNo,
       appType: item.appType,
       connectionId: item.connectionId,
       eventType: item.eventType,
-      payload: item.config || {},
+      payload: item.payload || {},
       status: "pending"
     }));
 

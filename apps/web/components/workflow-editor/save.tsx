@@ -1,6 +1,7 @@
 "use client"
 
-import { usePanelDetails } from "@/store/panelDetailsStore"
+import { nodeToApiFormat } from "@/lib/nodeToApiFormat";
+import { useWorkflowStore } from "@/store/workflowStore"
 import { usePathname } from "next/navigation"
 
 export default function Save() {
@@ -8,29 +9,29 @@ export default function Save() {
   const pathname = usePathname().split("/");
   const userId = pathname[2];
   const workflowId = pathname[3]
-  const getChanges = usePanelDetails((state) => state.getChanges)
-  const saveChanges = usePanelDetails((state) => state.saveChanges)
-  const originalData = usePanelDetails((state) => state.originalData)
+  const getChanges = useWorkflowStore((state) => state.getChanges)
+  const saveChanges = useWorkflowStore((state) => state.saveChanges)
+  const originalNodeData = useWorkflowStore((state) => state.orignalNodeData)
+  const nodeData = useWorkflowStore((state) => state.nodeData)
 
   const handleSave = async () => {
 
-    const changes = getChanges();
 
     try {
+
+      const saveChanges = nodeToApiFormat("e7770b71-eec8-4c60-929f-573d35908a56", "93959914-f676-428c-88b3-de7befc39798", nodeData)
+
       const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
         method: "POST",
-        body: JSON.stringify(changes),
+        body: JSON.stringify(saveChanges),
       })
 
       const data = await response.json();
-
       if (!response.ok) {
         console.log("error")
       }
 
-      saveChanges();
-
-      console.log(data)
+      console.log("fedata", data)
     } catch (error) {
       console.log(error)
     }
@@ -38,12 +39,10 @@ export default function Save() {
 
   const handlePublish = async () => {
 
-    // const changes = getChanges();
-
     try {
       const response = await fetch(`/api/${userId}/workflows/${workflowId}/publish`, {
         method: "POST",
-        body: JSON.stringify(originalData)
+        body: JSON.stringify(originalNodeData)
       });
 
       const data = await response.json();
