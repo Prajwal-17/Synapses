@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Label } from "@repo/ui";
 import { integrations } from "@/constants/Integrations";
 import { NodeDataType } from "@repo/types";
+import Account from "../integration/Account";
 
 const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
 
@@ -108,8 +109,9 @@ const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
       <div className="space-y-2">
         <div className="font-semibold">Account</div>
         <div className="bg-gray-100 py-2 px-2 flex justify-between items-center">
-          <div className="font-medium">prajwalk1702@gmail.com</div>
-          <button className="font-medium text-sm text-blue-500">Switch</button>
+          {/* <div className="font-medium">prajwalk1702@gmail.com</div>
+          <button className="font-medium text-sm text-blue-500">Switch</button> */}
+          <Account />
         </div>
       </div>
 

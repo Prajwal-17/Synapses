@@ -41,9 +41,10 @@ async function main() {
   await prisma.trigger.create({
     data: {
       workflowId: workflow.id,
-      connectionId: faker.string.uuid(),
+      // connectionId: "random",
       appType: "Gmail",
       eventType: "LISTEN_EMAIL",
+      type: "trigger",
       stepNo: 0,
       payload: {
         cc: faker.internet.email(),
@@ -60,8 +61,9 @@ async function main() {
     data: {
       workflowId: workflow.id,
       appType: "Gmail",
-      connectionId: faker.string.uuid(),
+      // connectionId: "random",
       eventType: "SEND_EMAIL",
+      type: "action",
       stepNo: 1,
       payload: {
         cc: faker.internet.email(),

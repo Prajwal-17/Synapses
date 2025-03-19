@@ -1,13 +1,18 @@
 import { google } from 'googleapis';
 import { serialize } from 'cookie';
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@repo/db/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
+import { prisma } from '@repo/db/prisma';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code'); //authorization code sent by google
+  const state = searchParams.get('state');//state of the popup window
+
+  // Check if we're in a popup flow -> {"popup":true}
+  // encode & decodeURIComponent -> to endcode & decode the uri query params eg(escape sequences)
+  const isPopup = state ? JSON.parse(decodeURIComponent(state)).popup : false;
 
   if (!code) {
     return NextResponse.json({ msg: "Code not present" }, { status: 400 });
@@ -38,10 +43,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Missing required token fields" }, { status: 400 });
     }
 
-    if (!refreshToken) {
-      return NextResponse.json({ msg: "You have already added this gmail" })
-    }
-
     oauth2Client.setCredentials({
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
@@ -61,42 +62,71 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ msg: "not email" })
     }
 
-    await prisma.gmailConnection.upsert({
+    await prisma.connection.upsert({
       where: {
-        gmail: googleEmail,
-      },
-      create: {
-        userId: session?.user.id,
-        gmail: googleEmail,
-        accessToken,
-        refreshToken,
-        tokenType: tokens.token_type,
-        id_token: tokens.id_token,
-        tokenExpiry: tokens.expiry_date,
+        userId: session.user.id
       },
       update: {
-        userId: session?.user.id,
-        gmail: googleEmail,
-        accessToken,
-        refreshToken,
-        tokenType: tokens.token_type,
-        id_token: tokens.id_token,
-        tokenExpiry: tokens.expiry_date,
+        appType: "Gmail",
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenType: tokenResponse.tokens.token_type as string,
+        id_token: tokenResponse.tokens.id_token as string,
+        tokenExpiry: tokenResponse.tokens.expiry_date as number,
+        metaData: {}
+      },
+      create: {
+        userId: session.user.id,
+        appType: "Gmail",
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        tokenType: tokenResponse.tokens.token_type as string,
+        id_token: tokenResponse.tokens.id_token as string,
+        tokenExpiry: tokenResponse.tokens.expiry_date as number,
+        metaData: {}
       }
     })
 
-    const response = NextResponse.redirect("http://localhost:3000/home");
+    /**
+     * if popup is open then we are sending a html page which sends a success message and closes the popup window
+     * window.opener -> the parent window which opened the popup window 
+     * "*" -> message to be sent to any origin
+     * window.onload -> js event handler to check the if page fully loaded  
+     */
+    if (isPopup) {
+      const html = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>Authentication Successful</title>
+            <script>
+              window.onload = function() {
+                if (window.opener) {
+                  window.opener.postMessage({ type: 'GOOGLE_AUTH_SUCCESS' }, '*');
+                  window.close();
+                }
+              };
+            </script>
+          </head>
+          <body>
+            <p>Authentication successful! You can close this window.</p>
+          </body>
+        </html>
+      `;
 
-    //serialize is used for formatting cookies so that it can be included in the http header
-    response.headers.set('Set-Cookie', serialize('refreshToken', refreshToken, {
-      httpOnly: true, // Prevents client-side JavaScript from accessing the cookie (security measure)
-      path: '/',// Cookie is available across the entire site
-      secure: process.env.NODE_ENV === 'production', // Ensures the cookie is only sent over HTTPS in production
-      sameSite: 'strict', // Prevents the cookie from being sent with cross-site requests (protects against CSRF attacks)
-    }));
-
-    return response;
-
+      //serialize is used for formatting cookies so that it can be included & sent in the http header eg(bytes format)
+      return new NextResponse(html, {
+        headers: {
+          'Content-Type': 'text/html',
+          'Set-Cookie': serialize('refreshToken', refreshToken, {
+            httpOnly: true,// Prevents client-side JavaScript from accessing the cookie (security measure)
+            path: '/',// Cookie is available across the entire site
+            secure: process.env.NODE_ENV === 'production',// Ensures the cookie is only sent over HTTPS in production
+            sameSite: 'strict',// Prevents the cookie from being sent with cross-site requests (protects against CSRF attacks)
+          })
+        }
+      });
+    }
   } catch (error: any) {
     console.error('Google OAuth Token Exchange Error:', error);
     return NextResponse.json({ msg: "Google OAuth Token Exchange Error" });

@@ -1,8 +1,23 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export default function gmailConnect() {
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === "GOOGLE_AUTH_SUCCESS") {
+        //fetch the connection details
+      }
+    }
+
+    window.addEventListener("message", handleMessage)
+
+    return () => {
+      window.removeEventListener("message", handleMessage)
+    }
+  }, [])
+
   const handleGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
     const redirectUri = `${window.location.origin}/api/auth/google/callback`;
@@ -10,7 +25,7 @@ export default function gmailConnect() {
 
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&access_type=offline`;
 
-    window.location.href = googleAuthUrl;
+    window.open(googleAuthUrl, "Google Sign In", "height=1200,width=1400")
   };
 
   return (
