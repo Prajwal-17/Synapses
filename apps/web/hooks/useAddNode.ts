@@ -18,23 +18,21 @@ export const useAddNode = () => {
       return [
         ...nodes,
         {
-          id: `${nodes.length + 1}`,
+          id: `${nodes.length}`,
           position: {
             x: 0,
-            //@ts-ignore
-            y: nodes[nodes.length - 1].position.y + 100
+            y: nodes.length * 100,
           },
           data: {
-            label: 'Placeholder Node'
+            label: 'Action Node'
           },
           type: "actionNode"
         },
         {
-          id: `${nodes.length + 2}`,
+          id: `${nodes.length + 1}`,
           position: {
             x: 0,
-            //@ts-ignore
-            y: nodes[nodes.length - 1].position.y + 200,
+            y: nodes.length * 100 + 100,
           },
           data: {
             label: 'Placeholder Node'
@@ -44,7 +42,6 @@ export const useAddNode = () => {
       ]
     })
 
-
     setEdges((edges) => {
       const currNode = getNodes();
       const lastActionNode = currNode[currNode.length - 2];
@@ -52,7 +49,7 @@ export const useAddNode = () => {
       return [
         ...edges,
         {
-          id: `e${Number(lastActionNode?.id) + 1}-${Number(lastActionNode?.id) + 2}`,
+          id: `e${Number(lastActionNode?.id)}-${Number(lastActionNode?.id) + 1}`,
           source: `${lastActionNode?.id}`,
           target: `${Number(lastActionNode?.id) + 1}`
         }
