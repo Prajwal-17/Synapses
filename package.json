@@ -6,7 +6,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clear:deps":"rm -rf node_modules ./pnpm-lock.yaml  && pnpm -r exec rm -rf node_modules .next dist"
+    "clear:deps":"rm -rf node_modules ./pnpm-lock.yaml  && pnpm -r exec rm -rf node_modules .next dist",
+    "dev:web":"cd apps/web && pnpm dev"
   },
   "dependencies": {
     "@auth/core": "0.34.2",

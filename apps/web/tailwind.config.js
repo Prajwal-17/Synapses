@@ -54,7 +54,10 @@ const config = {
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate"),
+		require("autoprefixer")
+	],
 }
 
 module.exports = config;
