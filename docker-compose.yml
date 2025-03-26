@@ -1,0 +1,33 @@
+services:
+  web:
+    container_name: apps_web
+    build: 
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    command: ["pnpm", "dev"]
+    ports:
+      - "3000:3000"
+    environment:
+    # in a compose file use the service name instead of localhost
+      - DATABASE_URL=postgresql://postgres:qwerty@db:5432/synapsesdb
+    depends_on:
+      - db
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/node_modules
+      - /app/apps/web/node_modules
+    
+  db:
+    image: postgres:latest
+    container_name: synapsesdb
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=qwerty
+      - POSTGRES_DB=synapsesdb
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+
+volumes:
+  postgres_volume:
