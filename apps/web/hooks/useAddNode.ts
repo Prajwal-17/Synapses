@@ -45,7 +45,6 @@ export const useAddNode = () => {
     setEdges((edges) => {
       const currNode = getNodes();
       const lastActionNode = currNode[currNode.length - 2];
-      console.log("lastaction", lastActionNode)
       return [
         ...edges,
         {

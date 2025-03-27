@@ -17,9 +17,9 @@ import Image from "next/image";
 import { Label } from "@repo/ui";
 import { integrations } from "@/constants/Integrations";
 import { NodeDataType } from "@repo/types";
-import Account from "../integration/Account";
+import Connection from "../integration/Connection";
 
-const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
+const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
 
   const setPanelStep = useSelectNodeStore((state) => state.setPanelStep)
   const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
@@ -111,7 +111,7 @@ const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
         <div className="bg-gray-100 py-2 px-2 flex justify-between items-center">
           {/* <div className="font-medium">prajwalk1702@gmail.com</div>
           <button className="font-medium text-sm text-blue-500">Switch</button> */}
-          <Account />
+          <Connection connectionId={currNode.connectionId} appType={currNode.appType} />
         </div>
       </div>
 
@@ -134,4 +134,4 @@ const SetuptData = ({ currNode }: { currNode: NodeDataType }) => {
   </>)
 }
 
-export default SetuptData
+export default SetupData

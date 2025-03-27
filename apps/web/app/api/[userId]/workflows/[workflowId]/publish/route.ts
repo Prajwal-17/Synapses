@@ -1,20 +1,26 @@
 import { prisma } from "@repo/db/prisma";
+import { ActionType } from "@repo/types";
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { userId: string; workflowId: string } }
-): Promise<NextResponse> {
+  { params }: {
+    params: Promise<{
+      userId: string,
+      workflowId: string
+    }>
+  }
+) {
   try {
-    const { userId, workflowId } = params;
+    const { userId, workflowId } = await params;
     const body = await req.json();
 
     const outbox = await prisma.outbox.createMany({
-      data: body.filter((item: any) => item.type === "action").map((item: any) => ({
+      data: body.filter((item: ActionType) => item.type === "action").map((item: ActionType) => ({
         userId: userId,
         workflowId: workflowId,
         stepNo: item.stepNo,
-        eventType: item.event,
+        eventType: item.eventType,
         payload: item.payload,
         status: "pending",
       }))

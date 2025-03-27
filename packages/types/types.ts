@@ -77,3 +77,15 @@ export type EmailPayloadType = {
   subject: string,
   body: string,
 }
+
+export type ConnectionType = {
+  id: string,
+  userId: string,
+  appType: string,
+  accessToken?: string,
+  refreshToken?: string,
+  tokenType?: string,
+  id_token?: string,
+  tokenExpiry?: BigInt,
+  metaData: Record<string, any>,
+}

@@ -1,15 +1,15 @@
 import { prisma } from "@repo/db/prisma";
-import { ActionType, ApiWorkflowType, NodeDataType, TriggerType } from "@repo/types";
+import { ActionType, ApiWorkflowType, TriggerType } from "@repo/types";
 import { NextRequest, NextResponse } from "next/server";
 
 //Get Full Data of a workflow
 export async function GET(
   req: NextRequest,
   { params }: {
-    params: {
+    params: Promise<{
       userId: string,
       workflowId: string,
-    }
+    }>
   }
 ) {
   try {
@@ -49,10 +49,10 @@ export async function GET(
 export async function POST(
   req: NextRequest,
   { params }: {
-    params: {
+    params: Promise<{
       userId: string,
       workflowId: string,
-    }
+    }>
   }
 ) {
   try {

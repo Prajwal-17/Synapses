@@ -9,8 +9,6 @@ export default function Save() {
   const pathname = usePathname().split("/");
   const userId = pathname[2];
   const workflowId = pathname[3]
-  const getChanges = useWorkflowStore((state) => state.getChanges)
-  const saveChanges = useWorkflowStore((state) => state.saveChanges)
   const originalNodeData = useWorkflowStore((state) => state.orignalNodeData)
   const nodeData = useWorkflowStore((state) => state.nodeData)
 

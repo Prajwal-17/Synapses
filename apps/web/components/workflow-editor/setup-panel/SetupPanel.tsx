@@ -13,7 +13,7 @@ const SetupPanel = () => {
 
   return (<>
 
-    {nodeData.length > 0 && nodeData.map((node: NodeDataType, index: any) => (
+    {nodeData.length > 0 && nodeData.map((node: NodeDataType, index) => (
       <div key={index}>
         {index === selectedNode && showPanel ? (
           <SetupCard currNode={node} />

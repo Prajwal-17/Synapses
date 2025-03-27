@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 
-export default function gmailConnect() {
+export default function GmailConnect() {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

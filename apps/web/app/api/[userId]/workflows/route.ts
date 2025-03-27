@@ -2,7 +2,12 @@ import { prisma } from "@repo/db/prisma";
 import { NextRequest, NextResponse } from "next/server"
 
 //Create a workflow
-export async function POST(req: NextRequest, { params }: { params: { userId: string } }) {
+export async function POST(req: NextRequest,
+  { params }: {
+    params: Promise<{
+      userId: string
+    }>
+  }) {
 
   try {
     const { userId } = await params;
@@ -36,10 +41,15 @@ export async function POST(req: NextRequest, { params }: { params: { userId: str
 }
 
 //Get Workflow details 
-export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
+export async function GET(req: NextRequest,
+  { params }: {
+    params: Promise<{
+      userId: string
+    }>
+  }) {
   try {
     const { userId } = await params;
-    console.log(userId, "userid")
+
     const user = await prisma.user.findFirst({
       where: {
         id: userId,

@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
 
     //create an instance of google oauth2 to handle token exchange
     const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
+      process.env.GOOGLE_CLIENT_ID as string,
+      process.env.GOOGLE_CLIENT_SECRET as string,
       `${process.env.NEXTAUTH_URL}/api/auth/google/callback`
     );
 
@@ -73,7 +73,9 @@ export async function GET(request: NextRequest) {
         tokenType: tokenResponse.tokens.token_type as string,
         id_token: tokenResponse.tokens.id_token as string,
         tokenExpiry: tokenResponse.tokens.expiry_date as number,
-        metaData: {}
+        metaData: {
+          "email": googleEmail,
+        }
       },
       create: {
         userId: session.user.id,
@@ -83,7 +85,9 @@ export async function GET(request: NextRequest) {
         tokenType: tokenResponse.tokens.token_type as string,
         id_token: tokenResponse.tokens.id_token as string,
         tokenExpiry: tokenResponse.tokens.expiry_date as number,
-        metaData: {}
+        metaData: {
+          "email": googleEmail,
+        }
       }
     })
 
@@ -127,7 +131,7 @@ export async function GET(request: NextRequest) {
         }
       });
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Google OAuth Token Exchange Error:', error);
     return NextResponse.json({ msg: "Google OAuth Token Exchange Error" });
   }

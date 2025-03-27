@@ -23,7 +23,7 @@ export default function Create() {
     }
 
     fetchWorkflow()
-  }, [])
+  }, [session?.user.id])
 
   const createWorkflow = async () => {
     try {

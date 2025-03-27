@@ -11,7 +11,7 @@ import { Separator } from "@repo/ui"
 import { NodeDataType } from "@repo/types";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
 import ConfigureData from "../configure-panel/ConfigureCard";
-import SetuptData from "./SetuptData";
+import SetupData from "./SetupData";
 
 export const SetupCard = ({ currNode }: { currNode: NodeDataType }) => {
 
@@ -68,7 +68,7 @@ export const SetupCard = ({ currNode }: { currNode: NodeDataType }) => {
 
       {
         panelStep === "setup" ? (
-          <SetuptData currNode={currNode} />
+          <SetupData currNode={currNode} />
         ) : (
           <ConfigureData currNode={currNode} />
         )
