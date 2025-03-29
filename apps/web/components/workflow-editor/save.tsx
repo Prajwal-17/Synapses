@@ -1,23 +1,27 @@
 "use client"
 
-import { nodeToApiFormat } from "@/lib/nodeToApiFormat";
+import { nodeToSaveApiFormat } from "@/lib/nodeToSaveApiFormat";
 import { useWorkflowStore } from "@/store/workflowStore"
 import { usePathname } from "next/navigation"
 
 export default function Save() {
 
   const pathname = usePathname().split("/");
-  const userId = pathname[2];
-  const workflowId = pathname[3]
-  const originalNodeData = useWorkflowStore((state) => state.orignalNodeData)
-  const nodeData = useWorkflowStore((state) => state.nodeData)
+  const userId = pathname[2] as string;
+  const workflowId = pathname[3] as string;
+  const originalNodeData = useWorkflowStore((state) => state.orignalNodeData);
+  const getChanges = useWorkflowStore((state) => state.getChanges);
 
   const handleSave = async () => {
-
-
     try {
+      const changes = getChanges();
 
-      const saveChanges = nodeToApiFormat("e7770b71-eec8-4c60-929f-573d35908a56", "93959914-f676-428c-88b3-de7befc39798", nodeData)
+      if (!userId && !workflowId && !changes) {
+        console.log("Nothing to save")
+      }
+
+      const saveChanges = nodeToSaveApiFormat(workflowId, userId, getChanges())
+      console.log("savechange", saveChanges)
 
       const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
         method: "POST",
@@ -29,7 +33,7 @@ export default function Save() {
         console.log("error")
       }
 
-      console.log("fedata", data)
+      console.log("saved data", data)
     } catch (error) {
       console.log(error)
     }
@@ -56,6 +60,7 @@ export default function Save() {
     }
   }
 
+
   return (<>
     <div>
       <button
@@ -66,6 +71,7 @@ export default function Save() {
 
       <button
         onClick={handleSave}
+
         className='bg-black text-white p-3 rounded-xl absolute right-0 z-50'>
         Save
       </button>

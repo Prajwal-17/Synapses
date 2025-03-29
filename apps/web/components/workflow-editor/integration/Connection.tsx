@@ -11,13 +11,15 @@ import {
 import { useSession } from "next-auth/react";
 import { useConnectionStore } from "@/store/connectionStore";
 import { ConnectionType } from "@repo/types";
+import { useWorkflowStore } from "@/store/workflowStore";
 
-export default function Connection({ connectionId, appType }: { connectionId: string, appType: string }) {
+export default function Connection({ connectionId, appType, stepNo }: { connectionId: string, appType: string, stepNo: number }) {
 
   const { data: session } = useSession();
   const connections = useConnectionStore((state) => state.connections)
   const setConnections = useConnectionStore((state) => state.setConnections)
   const [selectedConnection, setSelectedConnections] = useState<ConnectionType | null>(null);
+  const updateNodeData = useWorkflowStore((state) => state.updateNodeData)
 
   const handleGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -60,7 +62,6 @@ export default function Connection({ connectionId, appType }: { connectionId: st
     const isConnection = connections.find(connection => connection.id === connectionId)
 
     if (isConnection) {
-      console.log("isconnection", isConnection)
       setSelectedConnections(isConnection)
     }
 
@@ -80,7 +81,6 @@ export default function Connection({ connectionId, appType }: { connectionId: st
 
       const data = await response.json()
       setConnections(data.connections)
-      console.log(data.connections)
     } catch (error) {
       console.log(error)
     }
@@ -90,6 +90,7 @@ export default function Connection({ connectionId, appType }: { connectionId: st
     const selected = connections.find(connection => connection.metaData.email === value)
     if (selected) {
       setSelectedConnections(selected)
+      updateNodeData(stepNo, { connectionId: selected.id })
     }
   }
 

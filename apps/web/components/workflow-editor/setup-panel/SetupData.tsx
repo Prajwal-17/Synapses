@@ -27,34 +27,34 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
   return (<>
     <CardContent className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="app" className="font-semibold">
+        <Label htmlFor="appType" className="font-semibold">
           App
         </Label>
         <Select
           value={currNode.appType}
           onValueChange={(value) => {
-            updateNodeData(currNode.stepNo, { app: value });
+            updateNodeData(currNode.stepNo, { appType: value });
           }}
         >
-          <SelectTrigger id="app" className="w-full">
+          <SelectTrigger id="appType" className="w-full">
             <SelectValue className="bg-white" placeholder="Choose App" />
           </SelectTrigger>
           <SelectContent className="bg-white">
             <SelectGroup className="bg-white">
-              {integrations.map((app) => (
+              {integrations.map((appType) => (
                 <SelectItem
-                  key={app.integrationId}
-                  value={app.appValue}
+                  key={appType.integrationId}
+                  value={appType.appValue}
                   className="bg-white focus:bg-neutral-200 focus:cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <Image
-                      src={app.image}
+                      src={appType.image}
                       height={20}
                       width={20}
-                      alt={app.appLabel}
+                      alt={appType.appLabel}
                     />
-                    {app.appLabel}
+                    {appType.appLabel}
                   </div>
                 </SelectItem>
               ))}
@@ -74,7 +74,7 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
           disabled={!currNode.appType}
           value={currNode.eventType}
           onValueChange={(value) => {
-            updateNodeData(currNode.stepNo, { event: value });
+            updateNodeData(currNode.stepNo, { eventType: value });
           }}
         >
           <SelectTrigger
@@ -111,7 +111,7 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
         <div className="bg-gray-100 py-2 px-2 flex justify-between items-center">
           {/* <div className="font-medium">prajwalk1702@gmail.com</div>
           <button className="font-medium text-sm text-blue-500">Switch</button> */}
-          <Connection connectionId={currNode.connectionId} appType={currNode.appType} />
+          <Connection connectionId={currNode.connectionId} appType={currNode.appType} stepNo={currNode.stepNo} />
         </div>
       </div>
 

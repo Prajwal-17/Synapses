@@ -45,7 +45,7 @@ export async function GET(
   }
 }
 
-//Update data of a workflow
+// Update/save data of a workflow
 export async function POST(
   req: NextRequest,
   { params }: {
@@ -74,6 +74,9 @@ export async function POST(
     const workflow = await prisma.workflow.findUnique({
       where: {
         id: workflowId,
+      },
+      include: {
+        actions: true
       }
     });
 
@@ -81,59 +84,66 @@ export async function POST(
       return NextResponse.json({ msg: "Workflow does not exist or does not belong to the user" }, { status: 400 })
     };
 
-    const updatedWorkflow = await prisma.$transaction([
-      prisma.workflow.update({
-        where: { id: workflow.id },
-        data: {
-          userId: workflow.userId,
-          totalActionSteps: body.totalActionSteps,
-        }
-      }),
-      prisma.trigger.upsert({
-        where: { workflowId: workflow.id },
-        update: {
-          appType: trigger.appType,
-          connectionId: trigger.connectionId,
-          type: "trigger",
-          eventType: trigger.eventType,
-          payload: trigger.payload,
-          stepNo: trigger.stepNo
+    // pass prisma client in the async arrow function 
+    const updatedWorkflow = await prisma.$transaction(async (prisma) => {
+      await prisma.workflow.update({
+        where: {
+          id: workflow.id
         },
-        create: {
-          workflowId: workflow.id,
-          appType: trigger.appType,
-          connectionId: trigger.connectionId,
-          type: "trigger",
-          eventType: trigger.eventType,
-          payload: trigger.payload,
-          stepNo: trigger.stepNo
+        data: {
+          totalActionSteps: workflow.actions.length,
         }
-      }),
-      ...actions.map((action: ActionType) =>
-        prisma.action.upsert({
-          where: { id: action.id },
-          update: {
-            workflowId: workflow.id,
-            appType: action.appType,
-            connectionId: action.connectionId,
-            type: "action",
-            eventType: action.type,
-            payload: action.payload,
-            stepNo: action.stepNo,
+      })
+
+      if (trigger && trigger.type !== "") {
+        await prisma.trigger.update({
+          where: {
+            id: body.Trigger.id,
           },
-          create: {
-            workflowId: workflow.id,
-            appType: action.appType,
-            connectionId: action.connectionId,
-            type: "action",
-            eventType: action.type,
-            payload: action.payload,
-            stepNo: action.stepNo,
-          },
-        }
-        ))
-    ])
-    return NextResponse.json({ msg: "Successfully updated", updatedWorkflow }, { status: 200 })
+          data: {
+            workflowId: trigger.workflowId,
+            appType: trigger.appType,
+            connectionId: trigger.connectionId,
+            type: "trigger",
+            eventType: trigger.eventType,
+            payload: trigger.payload,
+            stepNo: trigger.stepNo
+          }
+        })
+      }
+
+      if (actions && actions.length > 0) {
+        await Promise.all(
+          actions.map((item) =>
+            prisma.action.upsert({
+              where: {
+                id: item.id
+              },
+              update: {
+                workflowId: workflow.id,
+                appType: item.appType,
+                connectionId: item.connectionId,
+                type: "action",
+                eventType: item.eventType,
+                payload: item.payload,
+                stepNo: item.stepNo
+              },
+              create: {
+                workflowId: workflow.id,
+                appType: item.appType,
+                connectionId: item.connectionId,
+                type: "action",
+                eventType: item.eventType,
+                payload: item.payload,
+                stepNo: item.stepNo
+              }
+            })
+          )
+        )
+      }
+    })
+
+    return NextResponse.json({ msg: "Successfully updated", updatedWorkflow: updatedWorkflow }, { status: 200 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 })
