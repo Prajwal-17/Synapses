@@ -44,6 +44,8 @@ export type WorkflowStateType = {
   setNodesFromApi: (nodeArray: NodeDataType[]) => void,
   updateNodeData: (stepNo: number, updatedData: Record<string, any>) => void
   getChanges: () => NodeDataType[],
+  saveState: boolean,
+  setSaveState: () => void,
   saveChanges: () => void,
 }
 
