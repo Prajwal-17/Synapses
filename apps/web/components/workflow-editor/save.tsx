@@ -11,6 +11,7 @@ export default function Save() {
   const workflowId = pathname[3] as string;
   const originalNodeData = useWorkflowStore((state) => state.orignalNodeData);
   const getChanges = useWorkflowStore((state) => state.getChanges);
+  const saveChanges = useWorkflowStore((state) => state.saveChanges)
 
   const handleSave = async () => {
     try {
@@ -19,21 +20,18 @@ export default function Save() {
       if (!userId && !workflowId && !changes) {
         console.log("Nothing to save")
       }
-
-      const saveChanges = nodeToSaveApiFormat(workflowId, userId, getChanges())
-      console.log("savechange", saveChanges)
+      const nodeChanges = nodeToSaveApiFormat(workflowId, userId, getChanges())
 
       const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
         method: "POST",
-        body: JSON.stringify(saveChanges),
+        body: JSON.stringify(nodeChanges),
       })
-
       const data = await response.json();
-      if (!response.ok) {
-        console.log("error")
-      }
 
-      console.log("saved data", data)
+      if (!response.ok) {
+        console.log("Something went wrong")
+      }
+      saveChanges();
     } catch (error) {
       console.log(error)
     }

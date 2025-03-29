@@ -2,15 +2,25 @@
 
 import FlowComponent from "@/components/workflow-editor/nodes/FlowComponent";
 import SetupPanel from "@/components/workflow-editor/setup-panel/SetupPanel";
+import { useWorkflowStore } from "@/store/workflowStore";
 import { ReactFlowProvider } from "@xyflow/react";
 import { useEffect, useState } from "react";
 
 export default function Editor() {
-  const [isDirty, setIsDirty] = useState(true);
 
+  const nodeData = useWorkflowStore((state) => state.nodeData)
+  const saveState = useWorkflowStore((state) => state.saveState)
+  const setSaveState = useWorkflowStore((state) => state.setSaveState)
+
+  // Track changes whenever nodeData updates
+  useEffect(() => {
+    setSaveState();
+  }, [nodeData, setSaveState]);
+
+  // Prevent user from exiting with unsaved changes
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (isDirty) {
+      if (saveState) {
         event.preventDefault();
       }
     };
@@ -19,7 +29,7 @@ export default function Editor() {
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [isDirty]);
+  }, [saveState]);
 
   return (<>
     <div className="h-[calc(100vh-4rem)] w-full relative">

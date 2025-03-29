@@ -63,8 +63,17 @@ export const useWorkflowStore = create<WorkflowStateType>((set, get) => ({
     ))
   },
 
+  saveState: false,
+
+  // Update saveState based on changes
+  setSaveState: () => set(() => ({
+    saveState: get().getChanges().length > 0,
+  })),
+
+  // Save changes and reset state
   saveChanges: () => set((state) => ({
-    // orignalNodeData: state.nodeData
-  }))
+    orignalNodeData: state.nodeData,
+    saveState: false,
+  })),
 
 }))
