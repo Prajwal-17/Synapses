@@ -106,7 +106,6 @@ export default function FlowComponent() {
         style={{ width: '100%', height: '100%' }}
         proOptions={{ hideAttribution: true }}
       >
-        {/* <MiniMap /> */}
         <Save />
         <Controls />
         <Background variant={BackgroundVariant.Cross} gap={40} />
