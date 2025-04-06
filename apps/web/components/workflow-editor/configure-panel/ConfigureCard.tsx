@@ -1,16 +1,13 @@
-"use client"
+"use client";
 
-import {
-  CardContent,
-} from "@repo/ui";
+import { CardContent } from "@repo/ui";
 import { NodeDataType } from "@repo/types";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";
 import Commit from "./github/Commit";
 import Pullrequest from "./github/Pullrequest";
 
-const ConfigureData = ({ currNode }: { currNode: NodeDataType }) => {
-
+const ConfigureCard = ({ currNode }: { currNode: NodeDataType }) => {
   const renderConfigureComponent = (selectedEvent: string) => {
     switch (selectedEvent) {
       case "LISTEN_EMAIL":
@@ -28,16 +25,15 @@ const ConfigureData = ({ currNode }: { currNode: NodeDataType }) => {
       default:
         break;
     }
-  }
+  };
 
-  return (<>
+  return (
+    <>
+      <CardContent className="flex h-[330px] flex-col justify-evenly overflow-auto p-1">
+        {currNode.eventType && renderConfigureComponent(currNode.eventType)}
+      </CardContent>
+    </>
+  );
+};
 
-    <CardContent className="h-[330px] flex flex-col justify-evenly overflow-auto">
-
-      {currNode.eventType && renderConfigureComponent(currNode.eventType)}
-
-    </CardContent>
-  </>)
-}
-
-export default ConfigureData
+export default ConfigureCard;

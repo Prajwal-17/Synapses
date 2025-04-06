@@ -7,3 +7,5 @@ export * from "./components/select";
 export * from "./components/separator";
 export * from "./components/sonner"
 export * from "./components/alert-dialog"
+export * from "./components/drawer"
+export * from "./components/tabs"

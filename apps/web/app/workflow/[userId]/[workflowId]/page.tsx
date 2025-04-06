@@ -1,16 +1,14 @@
-"use client"
+"use client";
 
 import FlowComponent from "@/components/workflow-editor/nodes/FlowComponent";
-import SetupPanel from "@/components/workflow-editor/setup-panel/SetupPanel";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { ReactFlowProvider } from "@xyflow/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Editor() {
-
-  const nodeData = useWorkflowStore((state) => state.nodeData)
-  const saveState = useWorkflowStore((state) => state.saveState)
-  const setSaveState = useWorkflowStore((state) => state.setSaveState)
+  const nodeData = useWorkflowStore((state) => state.nodeData);
+  const saveState = useWorkflowStore((state) => state.saveState);
+  const setSaveState = useWorkflowStore((state) => state.setSaveState);
 
   // Track changes whenever nodeData updates
   useEffect(() => {
@@ -31,15 +29,13 @@ export default function Editor() {
     };
   }, [saveState]);
 
-  return (<>
-    <div className="h-[calc(100vh-4rem)] w-full relative">
-      <ReactFlowProvider>
-        <FlowComponent />
-      </ReactFlowProvider>
-
-      <div className="absolute right-1 top-14">
-        <SetupPanel />
+  return (
+    <>
+      <div className="relative h-[calc(100vh-4rem)] w-full">
+        <ReactFlowProvider>
+          <FlowComponent />
+        </ReactFlowProvider>
       </div>
-    </div>
-  </>)
+    </>
+  );
 }
