@@ -34,6 +34,8 @@ async function main() {
       id: "93959914-f676-428c-88b3-de7befc39798",
       userId: testUserId,
       totalActionSteps: 1,
+      name: "Untitled",
+      status: false
     },
   });
 

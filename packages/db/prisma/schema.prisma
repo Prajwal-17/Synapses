@@ -51,12 +51,15 @@ model Workflow {
   userId           String
   totalActionSteps Int
   actions          Action[]
+  name             String
+  status           Boolean  @default(false)
 
   Trigger Trigger?
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   lastCheckedAt DateTime @default(now())
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   Outbox        Outbox[]
 }
 

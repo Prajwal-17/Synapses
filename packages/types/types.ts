@@ -1,12 +1,13 @@
-import { JsonValue } from "@prisma/client/runtime/library"
-
 export type ApiWorkflowType = {
   id: string,
   userId: string,
   totalActionSteps: number,
+  name: string,
+  status: boolean,
   Trigger: TriggerType,
   actions: ActionType[],
   lastCheckedAt?: Date,
+  updatedAt?: Date,
 }
 
 export type TriggerType = {
