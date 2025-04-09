@@ -50,6 +50,7 @@ type FeData = {
 export default function Workflows() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [loadingCircle, setLoadingCircle] = useState(false);
   const [workflows, setWorkflows] = useState([]);
 
   const { data: session } = useSession();
@@ -83,15 +84,47 @@ export default function Workflows() {
     return <div>Loading...</div>;
   }
 
+  const createWorkflow = async () => {
+    try {
+      if (!session?.user.id) {
+        return;
+      }
+      setLoadingCircle(true);
+      const response = await fetch(`/api/${session?.user.id}/workflows`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        console.log("Something went wrong while creating workflow");
+      }
+      const data = await response.json();
+      router.push(`/workflow/${data.workflow.userId}/${data.workflow.id}`);
+      setLoadingCircle(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="h-[calc(100vh-4rem)] w-full px-16 py-9">
         <div className="mb-7 flex items-center justify-between">
           <div className="text-3xl font-bold">Workflows</div>
           <div className="flex items-center">
-            <Button className="gap-2 transition-all active:scale-95">
-              <PlusCircle className="h-4 w-4" />
-              Create Flow
+            <Button
+              onClick={createWorkflow}
+              disabled={loadingCircle}
+              className="gap-2 transition-all active:scale-95"
+            >
+              {loadingCircle ? "" : <PlusCircle className="h-4 w-4" />}
+              {loadingCircle ? (
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-blue-500"></div>
+                  <span>Creating ...</span>
+                </div>
+              ) : (
+                "Create Flow"
+              )}
             </Button>
           </div>
         </div>
@@ -165,13 +198,10 @@ export default function Workflows() {
                     <Zap className="h-4 w-4 text-orange-500" />
                     {wf.name}
                   </TableCell>
-                  <TableCell>
-                    {workflows.map((wf: FeData, index: number) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-start gap-1"
-                      >
-                        {wf.apps.map((app) => (
+                  <TableCell className="">
+                    <div className="flex items-center justify-start gap-1">
+                      {wf.apps.map((app, index) => (
+                        <div key={index} className="">
                           <Image
                             className="border"
                             key={index + 1}
@@ -180,9 +210,9 @@ export default function Workflows() {
                             width={20}
                             alt={app}
                           />
-                        ))}
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    </div>
                   </TableCell>
                   <TableCell>{wf.last_modified}</TableCell>
                   <TableCell>

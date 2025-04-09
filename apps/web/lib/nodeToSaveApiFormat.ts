@@ -29,6 +29,8 @@ export const nodeToSaveApiFormat = (userId: string, workflowId: string, nodeArra
   const workflow: ApiWorkflowType = {
     id: workflowId,
     userId: userId,
+    name: "",
+    status: false,
     totalActionSteps: actions.length,
     Trigger: trigger,
     actions: actions
