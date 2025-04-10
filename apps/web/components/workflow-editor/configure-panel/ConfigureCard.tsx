@@ -11,9 +11,12 @@ const ConfigureCard = ({ currNode }: { currNode: NodeDataType }) => {
   const renderConfigureComponent = (selectedEvent: string) => {
     switch (selectedEvent) {
       case "LISTEN_EMAIL":
-        return <ListenEmail />;
+        return <ListenEmail currNode={currNode} />;
 
       case "SEND_EMAIL":
+        return <SendEmail currNode={currNode} />;
+
+      case "DRAFT_EMAIL":
         return <SendEmail currNode={currNode} />;
 
       case "COMMIT":
@@ -29,7 +32,7 @@ const ConfigureCard = ({ currNode }: { currNode: NodeDataType }) => {
 
   return (
     <>
-      <CardContent className="flex h-[330px] flex-col justify-evenly overflow-auto p-1">
+      <CardContent className="h-[330px] flex-col items-start justify-center overflow-auto p-1">
         {currNode.eventType && renderConfigureComponent(currNode.eventType)}
       </CardContent>
     </>

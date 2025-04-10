@@ -80,14 +80,14 @@ export type EmailPayloadType = {
   body: string,
 }
 
-export type ConnectionType = {
+export type GmailConnectionType = {
   id: string,
   userId: string,
   appType: string,
+  email: string,
   accessToken?: string,
   refreshToken?: string,
   tokenType?: string,
   id_token?: string,
   tokenExpiry?: BigInt,
-  metaData: Record<string, any>,
 }

@@ -90,18 +90,31 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
                 {integrations
                   .filter((item) => currNode.appType === item.appValue)
                   .map((item) =>
-                    item.actions.map((actionItem) => (
-                      <SelectItem
-                        key={actionItem.eventId}
-                        value={actionItem.eventValue}
-                        className="bg-white focus:cursor-pointer focus:bg-neutral-200"
-                      >
-                        <div className="text-left">
-                          <div>{actionItem.eventLabel}</div>
-                          <div>{actionItem.description}</div>
-                        </div>
-                      </SelectItem>
-                    )),
+                    currNode.stepNo === 0
+                      ? item.trigger?.map((triggerItem) => (
+                          <SelectItem
+                            key={triggerItem.eventId}
+                            value={triggerItem.eventValue}
+                            className="bg-white focus:cursor-pointer focus:bg-neutral-200"
+                          >
+                            <div className="text-left">
+                              <div>{triggerItem.eventLabel}</div>
+                              <div>{triggerItem.description}</div>
+                            </div>
+                          </SelectItem>
+                        ))
+                      : item.actions.map((actionItem) => (
+                          <SelectItem
+                            key={actionItem.eventId}
+                            value={actionItem.eventValue}
+                            className="bg-white focus:cursor-pointer focus:bg-neutral-200"
+                          >
+                            <div className="text-left">
+                              <div>{actionItem.eventLabel}</div>
+                              <div>{actionItem.description}</div>
+                            </div>
+                          </SelectItem>
+                        )),
                   )}
               </SelectGroup>
             </SelectContent>
@@ -125,9 +138,7 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
           <button
             disabled={!currNode.eventType}
             onClick={() => {
-              console.log("arrived");
               setPanelStep("configure");
-              console.log("updated");
             }}
             className={`w-full rounded-lg py-2 text-white ${
               currNode.eventType

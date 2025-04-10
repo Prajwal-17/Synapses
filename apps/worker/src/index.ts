@@ -50,9 +50,9 @@ async function sendEmail(task: TaskType) {
     const connectionDetails = await getTokenFromDB(task.appType, task.connectionId)
 
     const oauth2client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET,
-      `${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}/api/auth/google/callback`
+      process.env.GMAIL_CLIENT_ID,
+      process.env.GMAIL_CLIENT_SECRET,
+      `${process.env.GMAIL_CLIENT_ID}/api/auth/google/callback`
     );
     oauth2client.setCredentials({
       refresh_token: connectionDetails?.refreshToken,

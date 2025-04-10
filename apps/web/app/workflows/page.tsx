@@ -185,64 +185,65 @@ export default function Workflows() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {workflows.map((wf: FeData, index) => (
-                <TableRow key={index} className="text-[15px] font-medium">
-                  <TableCell
-                    onClick={() => {
-                      router.push(
-                        `/workflow/${session?.user.id}/${wf.workflowId}`,
-                      );
-                    }}
-                    className="flex items-center justify-start gap-2 px-4 py-5 hover:cursor-pointer hover:underline"
-                  >
-                    <Zap className="h-4 w-4 text-orange-500" />
-                    {wf.name}
-                  </TableCell>
-                  <TableCell className="">
-                    <div className="flex items-center justify-start gap-1">
-                      {wf.apps.map((app, index) => (
-                        <div key={index} className="">
-                          <Image
-                            className="border"
-                            key={index + 1}
-                            src={`/icons/${app.toLowerCase()}.svg`}
-                            height={20}
-                            width={20}
-                            alt={app}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>{wf.last_modified}</TableCell>
-                  <TableCell>
-                    <Switch />
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <EllipsisVertical className="h-4 w-4 hover:bg-gray-100 hover:bg-primary-foreground" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem className="hover:cursor-pointer">
-                          <div>
-                            <PiPencilSimpleDuotone />
+              {workflows.length > 0 &&
+                workflows.map((wf: FeData, index) => (
+                  <TableRow key={index} className="text-[15px] font-medium">
+                    <TableCell
+                      onClick={() => {
+                        router.push(
+                          `/workflow/${session?.user.id}/${wf.workflowId}`,
+                        );
+                      }}
+                      className="flex items-center justify-start gap-2 px-4 py-5 hover:cursor-pointer hover:underline"
+                    >
+                      <Zap className="h-4 w-4 text-orange-500" />
+                      {wf.name}
+                    </TableCell>
+                    <TableCell className="">
+                      <div className="flex items-center justify-start gap-1">
+                        {wf.apps.map((app, index) => (
+                          <div key={index} className="">
+                            <Image
+                              className="border"
+                              key={index + 1}
+                              src={`/icons/${app.toLowerCase()}.svg`}
+                              height={20}
+                              width={20}
+                              alt={app}
+                            />
                           </div>
-                          Rename
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                          <div>
-                            <GoTrash />
-                          </div>
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>{wf.last_modified}</TableCell>
+                    <TableCell>
+                      <Switch />
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <EllipsisVertical className="h-4 w-4 hover:bg-gray-100 hover:bg-primary-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem className="hover:cursor-pointer">
+                            <div>
+                              <PiPencilSimpleDuotone />
+                            </div>
+                            Rename
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <div>
+                              <GoTrash />
+                            </div>
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </div>

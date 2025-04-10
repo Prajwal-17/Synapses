@@ -27,8 +27,8 @@ export async function GET(request: NextRequest) {
 
     //create an instance of google oauth2 to handle token exchange
     const oauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID as string,
-      process.env.GOOGLE_CLIENT_SECRET as string,
+      process.env.GMAIL_CLIENT_ID as string,
+      process.env.GMAIL_CLIENT_SECRET as string,
       `${process.env.NEXTAUTH_URL}/api/auth/google/callback`
     );
 
@@ -62,32 +62,31 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ msg: "not email" })
     }
 
-    await prisma.connection.upsert({
+    await prisma.gmailConnection.upsert({
       where: {
-        userId: session.user.id
+        userId_email: {
+          userId: session.user.id,
+          email: googleEmail
+        }
       },
       update: {
         appType: "Gmail",
+        email: googleEmail,
         accessToken: accessToken,
         refreshToken: refreshToken,
         tokenType: tokenResponse.tokens.token_type as string,
         id_token: tokenResponse.tokens.id_token as string,
         tokenExpiry: tokenResponse.tokens.expiry_date as number,
-        metaData: {
-          "email": googleEmail,
-        }
       },
       create: {
         userId: session.user.id,
         appType: "Gmail",
+        email: googleEmail,
         accessToken: accessToken,
         refreshToken: refreshToken,
         tokenType: tokenResponse.tokens.token_type as string,
         id_token: tokenResponse.tokens.id_token as string,
         tokenExpiry: tokenResponse.tokens.expiry_date as number,
-        metaData: {
-          "email": googleEmail,
-        }
       }
     })
 

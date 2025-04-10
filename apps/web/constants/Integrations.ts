@@ -4,7 +4,7 @@ export const integrations = [
     appValue: "Gmail",
     appLabel: "Gmail",
     image: "/icons/gmail.svg",
-    actions: [
+    trigger: [
       {
         eventId: 1,
         eventValue: "LISTEN_EMAIL",
@@ -12,12 +12,21 @@ export const integrations = [
         type: "trigger",
         description: "Triggers to new emails",
       },
+    ],
+    actions: [
       {
-        eventId: 2,
+        eventId: 1,
         eventValue: "SEND_EMAIL",
         eventLabel: "Send Email",
-        type: "trigger",
+        type: "action",
         description: "Create and send an email",
+      },
+      {
+        eventId: 2,
+        eventValue: "DRAFT_EMAIL",
+        eventLabel: "Draft Email",
+        type: "action",
+        description: "Create a draft email",
       }
     ]
   },
@@ -26,16 +35,18 @@ export const integrations = [
     appValue: "Github",
     appLabel: "Github",
     image: "/icons/github.svg",
-    actions: [
+    trigger: [
       {
         eventId: 1,
         eventValue: "COMMIT",
         eventLabel: "Commit",
-        type: "action",
+        type: "trigger",
         description: "some desc",
-      },
+      }
+    ],
+    actions: [
       {
-        eventId: 2,
+        eventId: 1,
         eventValue: "PULL_REQUEST",
         eventLabel: "Pull request",
         type: "action",
@@ -48,7 +59,7 @@ export const integrations = [
     appValue: "Notion",
     appLabel: "Notion",
     image: "/icons/notion.svg",
-    actions: [
+    trigger: [
       {
         eventId: 1,
         eventValue: "random",
@@ -56,8 +67,10 @@ export const integrations = [
         type: "trigger",
         description: "",
       },
+    ],
+    actions: [
       {
-        eventId: 2,
+        eventId: 1,
         eventValue: "random",
         eventLabel: "random",
         type: "trigger",
