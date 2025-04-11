@@ -40,7 +40,8 @@ export enum NodeType {
 export type WorkflowStateType = {
   nodeData: NodeDataType[],
   orignalNodeData: NodeDataType[],
-
+  name: string,
+  setName: (value: string) => void,
   addNode: () => void,
   setNodesFromApi: (nodeArray: NodeDataType[]) => void,
   updateNodeData: (stepNo: number, updatedData: Record<string, any>) => void

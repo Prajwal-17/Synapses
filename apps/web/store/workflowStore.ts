@@ -21,6 +21,14 @@ export const useWorkflowStore = create<WorkflowStateType>((set, get) => ({
   //stores the original node data fetched from the api, used to track changes 
   orignalNodeData: [initialNode],
 
+  name: "",
+
+  setName: (value: string) => set(() => {
+    return {
+      name: value
+    }
+  }),
+
   //adding a new node
   addNode: () => set((state) => {
     const newNodeId = uuidv4();

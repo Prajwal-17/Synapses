@@ -95,7 +95,7 @@ export async function POST(
         }
       })
 
-      if (trigger && trigger.type !== "") {
+      if (trigger && trigger.appType !== "") {
         await prisma.trigger.update({
           where: {
             id: body.Trigger.id,

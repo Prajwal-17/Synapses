@@ -19,9 +19,11 @@ export async function POST(
       data: body.filter((item: ActionType) => item.type === "action").map((item: ActionType) => ({
         userId: userId,
         workflowId: workflowId,
-        stepNo: item.stepNo,
+        appType: item.appType,
+        connectionId: item.connectionId,
         eventType: item.eventType,
         payload: item.payload,
+        stepNo: item.stepNo,
         status: "pending",
       }))
     })

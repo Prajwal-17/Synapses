@@ -1,12 +1,12 @@
 import { ActionType, ApiWorkflowType, NodeDataType, TriggerType } from "@repo/types";
 
-export const nodeToSaveApiFormat = (userId: string, workflowId: string, nodeArray: NodeDataType[]) => {
+export const nodeToSaveApiFormat = (userId: string, workflowId: string, name: string, nodeArray: NodeDataType[]) => {
   const triggerNode = nodeArray.find(node => node.type === "trigger")
   const actionNodes = nodeArray.filter(node => node.type === "action")
 
   const trigger: TriggerType = {
     id: triggerNode?.id || "",
-    workflowId: triggerNode?.workflowId || "",
+    workflowId: workflowId,
     appType: triggerNode?.appType || "",
     connectionId: triggerNode?.connectionId || "",
     type: triggerNode?.type || "",
@@ -29,7 +29,7 @@ export const nodeToSaveApiFormat = (userId: string, workflowId: string, nodeArra
   const workflow: ApiWorkflowType = {
     id: workflowId,
     userId: userId,
-    name: "",
+    name: name,
     status: false,
     totalActionSteps: actions.length,
     Trigger: trigger,

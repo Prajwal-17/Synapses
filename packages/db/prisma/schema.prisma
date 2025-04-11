@@ -123,11 +123,11 @@ model Outbox {
   id           String @id @default(uuid())
   userId       String
   workflowId   String
-  stepNo       Int
   appType      String
   connectionId String
   eventType    String
   payload      Json
+  stepNo       Int
   status       String @default("pending")
 
   createdAt DateTime @default(now())

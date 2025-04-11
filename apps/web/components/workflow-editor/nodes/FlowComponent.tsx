@@ -14,12 +14,13 @@ import ActionNode from "./ActionNode";
 import { PlaceholderNode } from "./Placeholder-node";
 import { initialNodes } from "@/constants/InitialNodes";
 import { initialEdges } from "@/constants/InitialEdges";
-import Save from "../save";
 import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { NodeDataType } from "@repo/types";
 import { apiToNodeData } from "@/lib/apiToNodeFormat";
 import EditPanel from "../setup-panel/EditPanel";
+import { WorkflowFooter } from "@/components/workflow-footer/WorkflowFooter";
+import { useWorkflowStore } from "@/store/workflowStore";
 
 export const nodeTypes = {
   triggerNode: TriggerNode,
@@ -31,6 +32,7 @@ export default function FlowComponent() {
   const [nodes, setNodes] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
   const { userId, workflowId } = useParams();
+  const setName = useWorkflowStore((state) => state.setName);
 
   useEffect(() => {
     const fetchWorkflowDetails = async () => {
@@ -39,7 +41,7 @@ export default function FlowComponent() {
       });
 
       const data = await response.json();
-
+      setName(data.workflow.name);
       //updates the new nodeData in zustand
       const nodeData = apiToNodeData(data.workflow);
 
@@ -96,24 +98,26 @@ export default function FlowComponent() {
 
   return (
     <>
-      <div className="relative h-full w-full">
-        <ReactFlow
-          defaultNodes={initialNodes}
-          nodes={nodes}
-          defaultEdges={initialEdges}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          fitView
-          style={{ width: "100%", height: "100%" }}
-          proOptions={{ hideAttribution: true }}
-        >
-          <Save />
-          <Controls />
-          <Background variant={BackgroundVariant.Cross} gap={40} />
-          <div>
+      <div className="flex h-full w-full flex-col">
+        <div className="relative w-full flex-grow">
+          <ReactFlow
+            defaultNodes={initialNodes}
+            nodes={nodes}
+            defaultEdges={initialEdges}
+            edges={edges}
+            nodeTypes={nodeTypes}
+            fitView
+            proOptions={{ hideAttribution: true }}
+          >
+            <Controls orientation="horizontal" />
+            <Background variant={BackgroundVariant.Cross} gap={40} />
             <EditPanel />
-          </div>
-        </ReactFlow>
+          </ReactFlow>
+        </div>
+        <WorkflowFooter
+          userId={userId as string}
+          workflowId={workflowId as string}
+        />
       </div>
     </>
   );

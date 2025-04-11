@@ -17,7 +17,6 @@ import {
   Switch,
 } from "@repo/ui";
 import {
-  ChevronDown,
   EllipsisVertical,
   PlusCircle,
   RefreshCw,
@@ -52,33 +51,34 @@ export default function Workflows() {
   const [loading, setLoading] = useState(false);
   const [loadingCircle, setLoadingCircle] = useState(false);
   const [workflows, setWorkflows] = useState([]);
+  const [search, setSearch] = useState("");
 
   const { data: session } = useSession();
 
   useEffect(() => {
-    const fetchWorkflows = async () => {
-      try {
-        if (!session?.user.id) {
-          return;
-        }
-        setLoading(true);
-        const response = await fetch(`/api/${session?.user.id}/workflows`, {
-          method: "GET",
-        });
-
-        if (!response.ok) {
-          console.log("Error fetching workflows");
-        }
-        const data = await response.json();
-        setWorkflows(data.workflows);
-        setLoading(false);
-      } catch (error) {
-        console.log("Fetch workflows error");
-      }
-    };
-
     fetchWorkflows();
   }, []);
+
+  const fetchWorkflows = async () => {
+    try {
+      if (!session?.user.id) {
+        return;
+      }
+      setLoading(true);
+      const response = await fetch(`/api/${session?.user.id}/workflows`, {
+        method: "GET",
+      });
+
+      if (!response.ok) {
+        console.log("Error fetching workflows");
+      }
+      const data = await response.json();
+      setWorkflows(data.workflows);
+      setLoading(false);
+    } catch (error) {
+      console.log("Fetch workflows error");
+    }
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -104,6 +104,10 @@ export default function Workflows() {
       console.log(error);
     }
   };
+
+  const filteredWorkflows = workflows.filter((wf: FeData) =>
+    wf.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <>
@@ -134,15 +138,19 @@ export default function Workflows() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
             <Input
               className="pl-9"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+              }}
               type="search"
               placeholder="Search by name"
             />
           </div>
 
           <div className="flex items-center justify-between gap-2">
-            <Select>
+            <Select defaultValue="all">
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Theme" />
+                <SelectValue placeholder="" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
@@ -155,6 +163,7 @@ export default function Workflows() {
               variant="outline"
               size="icon"
               className="transition-all hover:bg-gray-100 active:scale-95"
+              onClick={fetchWorkflows}
             >
               <RefreshCw />
             </Button>
@@ -172,21 +181,19 @@ export default function Workflows() {
                 <TableHead className="min-w-[150px]">
                   <div className="flex items-center gap-1 hover:cursor-pointer hover:text-black">
                     Last Modified
-                    <ChevronDown className="h-4 w-4" />
                   </div>
                 </TableHead>
                 <TableHead className="min-w-[100px]">
                   <div className="flex items-center gap-1 hover:cursor-pointer hover:text-black">
                     Status
-                    <ChevronDown className="h-4 w-4" />
                   </div>
                 </TableHead>
                 <TableHead className="w-[50px] min-w-[50px]"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {workflows.length > 0 &&
-                workflows.map((wf: FeData, index) => (
+              {filteredWorkflows.length > 0 ? (
+                filteredWorkflows.map((wf: FeData, index) => (
                   <TableRow key={index} className="text-[15px] font-medium">
                     <TableCell
                       onClick={() => {
@@ -243,7 +250,14 @@ export default function Workflows() {
                       </DropdownMenu>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="py-5 text-center">
+                    No Workflows Found
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>

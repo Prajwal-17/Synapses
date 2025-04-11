@@ -96,7 +96,7 @@ export default function Connection({
 
   const handleSelectChange = (value: string) => {
     const selected = connections.find(
-      (connection) => connection.metaData.email === value,
+      (connection) => connection.email === value,
     );
     if (selected) {
       setSelectedConnections(selected);

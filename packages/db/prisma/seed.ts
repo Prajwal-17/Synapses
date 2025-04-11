@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const { faker } = require("@faker-js/faker");
+import { PrismaClient } from "@prisma/client";
+import { faker } from "@faker-js/faker"
 
 const prisma = new PrismaClient();
 
@@ -39,21 +39,30 @@ async function main() {
     },
   });
 
+  const gmailConnection = await prisma.gmailConnection.create({
+    data: {
+      userId: testUserId,
+      appType: "Gmail",
+      email: faker.internet.email(),
+      accessToken: faker.string.uuid(),
+      refreshToken: faker.string.uuid(),
+      tokenType: "Bearer",
+      id_token: faker.string.uuid(),
+      tokenExpiry: BigInt(Date.now() + 3600 * 1000),
+    },
+  });
+
   // Create a trigger for the workflow
   await prisma.trigger.create({
     data: {
       workflowId: workflow.id,
-      // connectionId: "random",
+      connectionId: gmailConnection.id,
       appType: "Gmail",
       eventType: "LISTEN_EMAIL",
       type: "trigger",
       stepNo: 0,
       payload: {
-        cc: faker.internet.email(),
-        to: faker.internet.email(),
-        body: faker.lorem.paragraph(),
-        from: faker.internet.email(),
-        subject: faker.lorem.sentence(),
+        label: "INBOX"
       },
     },
   });
@@ -63,7 +72,7 @@ async function main() {
     data: {
       workflowId: workflow.id,
       appType: "Gmail",
-      // connectionId: "random",
+      connectionId: gmailConnection.id,
       eventType: "SEND_EMAIL",
       type: "action",
       stepNo: 1,
