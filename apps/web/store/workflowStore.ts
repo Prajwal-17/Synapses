@@ -29,6 +29,15 @@ export const useWorkflowStore = create<WorkflowStateType>((set, get) => ({
     }
   }),
 
+  status: false,
+
+  setStatus: (value: boolean) => set(() => {
+    return {
+      status: value
+    }
+  }),
+
+
   //adding a new node
   addNode: () => set((state) => {
     const newNodeId = uuidv4();

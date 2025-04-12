@@ -33,6 +33,7 @@ export default function FlowComponent() {
   const [edges, setEdges] = useEdgesState(initialEdges);
   const { userId, workflowId } = useParams();
   const setName = useWorkflowStore((state) => state.setName);
+  const setStatus = useWorkflowStore((state) => state.setStatus);
 
   useEffect(() => {
     const fetchWorkflowDetails = async () => {
@@ -42,6 +43,8 @@ export default function FlowComponent() {
 
       const data = await response.json();
       setName(data.workflow.name);
+      setStatus(data.workflow.status);
+
       //updates the new nodeData in zustand
       const nodeData = apiToNodeData(data.workflow);
 

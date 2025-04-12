@@ -1,7 +1,7 @@
 import { nodeToSaveApiFormat } from "@/lib/nodeToSaveApiFormat";
 import { useWorkflowStore } from "@/store/workflowStore";
-import { Button, Switch } from "@repo/ui";
-import { LoaderCircle, Save, Send } from "lucide-react";
+import { Button, Label, Switch } from "@repo/ui";
+import { LoaderCircle, Save } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -11,11 +11,13 @@ export const WorkflowActions = () => {
   const workflowId = pathname[3] as string;
   const originalNodeData = useWorkflowStore((state) => state.orignalNodeData);
   const name = useWorkflowStore((state) => state.name);
+  const status = useWorkflowStore((state) => state.status);
+  const setStatus = useWorkflowStore((state) => state.setStatus);
   const getChanges = useWorkflowStore((state) => state.getChanges);
   const saveChanges = useWorkflowStore((state) => state.saveChanges);
 
   const [isSaving, setIsSaving] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
+  const [isStatusLoading, setIsStatusLoading] = useState(false);
 
   const handleSave = async () => {
     try {
@@ -27,9 +29,8 @@ export const WorkflowActions = () => {
         setIsSaving(false);
         return;
       }
-      const nodeArray = getChanges();
 
-      if (nodeArray.length <= 0) {
+      if (changes.length <= 0) {
         setIsSaving(false);
         return;
       }
@@ -38,7 +39,7 @@ export const WorkflowActions = () => {
         userId,
         workflowId,
         name,
-        nodeArray,
+        changes,
       );
 
       const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
@@ -60,21 +61,22 @@ export const WorkflowActions = () => {
 
   const handlePublish = async () => {
     try {
-      setIsPublishing(true);
+      setIsStatusLoading(true);
       const response = await fetch(
-        `/api/${userId}/workflows/${workflowId}/publish`,
+        `/api/${userId}/workflows/${workflowId}/status`,
         {
           method: "POST",
-          body: JSON.stringify(originalNodeData),
+          body: JSON.stringify({ workflowStatus: !status }),
         },
       );
       if (!response.ok) {
         console.log("error");
+        setIsStatusLoading(false);
         return;
       }
-
       const data = await response.json();
-      setIsPublishing(false);
+      setStatus(!status);
+      setIsStatusLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -82,22 +84,21 @@ export const WorkflowActions = () => {
 
   return (
     <>
-      <Button disabled={isSaving || isPublishing} onClick={handlePublish}>
-        {isPublishing ? (
-          <>
-            <LoaderCircle className="h-4 w-4 animate-spin" />
-            <span>Publishing ...</span>
-          </>
-        ) : (
-          <>
-            <Send className="h-4 w-4" />
-            <span>Publish</span>
-          </>
-        )}
-      </Button>
+      <div className="flex items-center justify-center gap-2">
+        <Label htmlFor="status">
+          {status ? "Turn workflow off" : "Turn workflow on"}
+        </Label>
+        <Switch
+          id="status"
+          disabled={isStatusLoading}
+          checked={status}
+          onCheckedChange={handlePublish}
+        />
+        {isStatusLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+      </div>
       <Button
         onClick={handleSave}
-        disabled={isSaving || isPublishing}
+        disabled={isSaving || isStatusLoading}
         variant="outline"
       >
         {isSaving ? (
