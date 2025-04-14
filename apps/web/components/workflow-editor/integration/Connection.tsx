@@ -1,6 +1,5 @@
 import { Button } from "@repo/ui";
 import { useEffect, useState } from "react";
-import { MdRefresh } from "react-icons/md";
 import {
   Select,
   SelectContent,
@@ -12,6 +11,7 @@ import { useSession } from "next-auth/react";
 import { useConnectionStore } from "@/store/connectionStore";
 import { GmailConnectionType } from "@repo/types";
 import { useWorkflowStore } from "@/store/workflowStore";
+import { Loader2Icon, RefreshCw } from "lucide-react";
 
 export default function Connection({
   connectionId,
@@ -28,6 +28,7 @@ export default function Connection({
   const [selectedConnection, setSelectedConnections] =
     useState<GmailConnectionType | null>(null);
   const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
+  const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GMAIL_CLIENT_ID;
@@ -48,7 +49,7 @@ export default function Connection({
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === "GOOGLE_AUTH_SUCCESS") {
-        fetchConnections();
+        refreshConnections();
       }
     };
 
@@ -61,8 +62,6 @@ export default function Connection({
   }, []);
 
   useEffect(() => {
-    fetchConnections();
-
     const isConnection = connections.find(
       (connection) => connection.id === connectionId,
     );
@@ -70,18 +69,21 @@ export default function Connection({
     if (isConnection) {
       setSelectedConnections(isConnection);
     }
-  }, [connectionId]);
+  }, []);
 
-  const fetchConnections = async () => {
+  // Filter connections based on appType
+  const filteredConnections = connections.filter(
+    (connection) => connection.appType === appType,
+  );
+
+  const refreshConnections = async () => {
     if (!session?.user.id) return;
 
     try {
-      const response = await fetch(
-        `/api/connections?app=${appType}&userId=${session?.user.id}`,
-        {
-          method: "GET",
-        },
-      );
+      setLoading(true);
+      const response = await fetch(`/api/connections/${session.user.id}`, {
+        method: "GET",
+      });
 
       if (!response.ok) {
         console.log("Something went wrong while fetching connections");
@@ -89,6 +91,7 @@ export default function Connection({
 
       const data = await response.json();
       setConnections(data.connections);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -106,32 +109,51 @@ export default function Connection({
 
   return (
     <div className="flex w-full items-center justify-between">
-      <Select
-        value={selectedConnection?.email || ""}
-        onValueChange={(value) => handleSelectChange(value)}
-        onOpenChange={() => fetchConnections()}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Choose account" />
-        </SelectTrigger>
+      {filteredConnections.length > 0 ? (
+        <div className="flex w-full items-center justify-between gap-2">
+          <Select
+            disabled={loading}
+            value={selectedConnection?.email || ""}
+            onValueChange={(value) => handleSelectChange(value)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Choose account" />
+            </SelectTrigger>
 
-        <SelectContent>
-          {connections.length > 0 ? (
-            connections.map((item: GmailConnectionType, index) => (
-              <SelectItem key={index} value={item.email}>
-                {item.email}
-              </SelectItem>
-            ))
+            <SelectContent>
+              {filteredConnections.map((item: GmailConnectionType, index) => (
+                <SelectItem key={index} value={item.email}>
+                  {item.email}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Button disabled={loading} onClick={handleGoogleLogin}>
+            Connect
+          </Button>
+          {loading ? (
+            <Loader2Icon className="h-9 w-9 animate-spin" />
           ) : (
-            <div>Loading...</div>
+            <Button
+              onClick={refreshConnections}
+              className="px-1"
+              size="icon"
+              variant="outline"
+            >
+              <RefreshCw className="h-4 w-4" />
+            </Button>
           )}
-        </SelectContent>
-      </Select>
-
-      <Button onClick={handleGoogleLogin}>Connect</Button>
-      <div className="hover:cursor-pointer">
-        <MdRefresh size={25} />
-      </div>
+        </div>
+      ) : (
+        <Button
+          disabled={loading}
+          className="w-full"
+          onClick={handleGoogleLogin}
+        >
+          {loading ? <span>Connecting ...</span> : <span>Connect</span>}
+        </Button>
+      )}
     </div>
   );
 }

@@ -123,9 +123,7 @@ const SetupData = ({ currNode }: { currNode: NodeDataType }) => {
 
         <div className="space-y-2">
           <div className="font-semibold">Account</div>
-          <div className="flex items-center justify-between bg-gray-100 px-2 py-2">
-            {/* <div className="font-medium">prajwalk1702@gmail.com</div>
-          <button className="font-medium text-sm text-blue-500">Switch</button> */}
+          <div className="flex items-center justify-between">
             <Connection
               connectionId={currNode.connectionId}
               appType={currNode.appType}

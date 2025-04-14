@@ -21,6 +21,7 @@ import { apiToNodeData } from "@/lib/apiToNodeFormat";
 import EditPanel from "../setup-panel/EditPanel";
 import { WorkflowFooter } from "@/components/workflow-footer/WorkflowFooter";
 import { useWorkflowStore } from "@/store/workflowStore";
+import { useConnectionStore } from "@/store/connectionStore";
 
 export const nodeTypes = {
   triggerNode: TriggerNode,
@@ -34,69 +35,92 @@ export default function FlowComponent() {
   const { userId, workflowId } = useParams();
   const setName = useWorkflowStore((state) => state.setName);
   const setStatus = useWorkflowStore((state) => state.setStatus);
+  const setConnections = useConnectionStore((state) => state.setConnections);
 
-  useEffect(() => {
-    const fetchWorkflowDetails = async () => {
-      const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
+  // fetch all workflow details
+  const fetchWorkflowDetails = async () => {
+    const response = await fetch(`/api/${userId}/workflows/${workflowId}`, {
+      method: "GET",
+    });
+
+    const data = await response.json();
+    setName(data.workflow.name);
+    setStatus(data.workflow.status);
+
+    //updates the new nodeData in zustand
+    const nodeData = apiToNodeData(data.workflow);
+
+    if (nodeData) {
+      //to create the node object for the frontend
+      const fetchedNodes = nodeData.map(
+        (node: NodeDataType, index: number) => ({
+          id: `${index}`,
+          position: {
+            x: 0,
+            y: index * 100,
+          },
+          data: {
+            label: `Node ${index}`,
+          },
+          type: index === 0 ? "triggerNode" : "actionNode",
+        }),
+      );
+
+      fetchedNodes.push({
+        id: `${fetchedNodes.length}`,
+        position: {
+          x: 0,
+          y: fetchedNodes.length * 100,
+        },
+        data: {
+          label: "Placeholder Node",
+        },
+        type: "placeholderNode",
+      });
+
+      //to update edges
+      const updatedEdges = nodeData.map(
+        (node: NodeDataType, index: number) => ({
+          id: `e${index}-${index + 1}`,
+          source: `${index}`,
+          target: `${index + 1}`,
+        }),
+      );
+      setNodes((nds) => {
+        nds.splice(0);
+        return [...nds, ...fetchedNodes];
+      });
+
+      setEdges((eds) => {
+        eds.splice(0);
+        return [...eds, ...updatedEdges];
+      });
+    }
+  };
+
+  // fetch all connections details
+  const fetchConnections = async () => {
+    if (!userId) return;
+
+    try {
+      const response = await fetch(`/api/connections/${userId}`, {
         method: "GET",
       });
 
-      const data = await response.json();
-      setName(data.workflow.name);
-      setStatus(data.workflow.status);
-
-      //updates the new nodeData in zustand
-      const nodeData = apiToNodeData(data.workflow);
-
-      if (nodeData) {
-        //to create the node object for the frontend
-        const fetchedNodes = nodeData.map(
-          (node: NodeDataType, index: number) => ({
-            id: `${index}`,
-            position: {
-              x: 0,
-              y: index * 100,
-            },
-            data: {
-              label: `Node ${index}`,
-            },
-            type: index === 0 ? "triggerNode" : "actionNode",
-          }),
-        );
-
-        fetchedNodes.push({
-          id: `${fetchedNodes.length}`,
-          position: {
-            x: 0,
-            y: fetchedNodes.length * 100,
-          },
-          data: {
-            label: "Placeholder Node",
-          },
-          type: "placeholderNode",
-        });
-
-        //to update edges
-        const updatedEdges = nodeData.map(
-          (node: NodeDataType, index: number) => ({
-            id: `e${index}-${index + 1}`,
-            source: `${index}`,
-            target: `${index + 1}`,
-          }),
-        );
-        setNodes((nds) => {
-          nds.splice(0);
-          return [...nds, ...fetchedNodes];
-        });
-
-        setEdges((eds) => {
-          eds.splice(0);
-          return [...eds, ...updatedEdges];
-        });
+      if (!response.ok) {
+        console.log("Something went wrong while fetching connections");
       }
-    };
 
+      const data = await response.json();
+      setConnections(data.connections);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
     fetchWorkflowDetails();
+    fetchConnections();
   }, [userId, workflowId]);
 
   return (
