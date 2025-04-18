@@ -39,16 +39,18 @@ async function main() {
     },
   });
 
-  const gmailConnection = await prisma.gmailConnection.create({
+  const connection = await prisma.connection.create({
     data: {
       userId: testUserId,
       appType: "Gmail",
-      email: faker.internet.email(),
       accessToken: faker.string.uuid(),
       refreshToken: faker.string.uuid(),
-      tokenType: "Bearer",
-      id_token: faker.string.uuid(),
-      tokenExpiry: BigInt(Date.now() + 3600 * 1000),
+      metaData: {
+        "tokenType": "Bearer",
+        "id_token": faker.string.uuid(),
+        "tokenExpiry": Date.now() + 3600 * 1000,
+      },
+      expiresAt: new Date()
     },
   });
 
@@ -56,7 +58,7 @@ async function main() {
   await prisma.trigger.create({
     data: {
       workflowId: workflow.id,
-      connectionId: gmailConnection.id,
+      connectionId: connection.id,
       appType: "Gmail",
       eventType: "LISTEN_EMAIL",
       type: "trigger",
@@ -72,7 +74,7 @@ async function main() {
     data: {
       workflowId: workflow.id,
       appType: "Gmail",
-      connectionId: gmailConnection.id,
+      connectionId: connection.id,
       eventType: "SEND_EMAIL",
       type: "action",
       stepNo: 1,

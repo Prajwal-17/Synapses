@@ -12,6 +12,7 @@ import { useConnectionStore } from "@/store/connectionStore";
 import { GmailConnectionType } from "@repo/types";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { Loader2Icon, RefreshCw } from "lucide-react";
+import { handleGoogleLogin, handleNotionLogin } from "@/lib/connectionLib";
 
 export default function Connection({
   connectionId,
@@ -30,20 +31,9 @@ export default function Connection({
   const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
   const [loading, setLoading] = useState(false);
 
-  const handleGoogleLogin = () => {
-    const clientId = process.env.NEXT_PUBLIC_GMAIL_CLIENT_ID;
-    const redirectUri = `${window.location.origin}/api/auth/google/callback`;
-    const scope =
-      "https://mail.google.com/ https://www.googleapis.com/auth/user.emails.read https://www.googleapis.com/auth/userinfo.profile";
-
-    // Use 'state' to indicate it's a popup flow
-    const state = encodeURIComponent(JSON.stringify({ popup: true }));
-
-    //
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&access_type=offline&prompt=consent&state=${state}`;
-
-    //to open a popup window
-    window.open(googleAuthUrl, "Google Sign In", "height=600,width=800");
+  const handleConnection = () => {
+    appType === "Gmail" && handleGoogleLogin();
+    appType === "Notion" && handleNotionLogin();
   };
 
   useEffect(() => {
@@ -129,7 +119,7 @@ export default function Connection({
             </SelectContent>
           </Select>
 
-          <Button disabled={loading} onClick={handleGoogleLogin}>
+          <Button disabled={loading} onClick={handleConnection}>
             Connect
           </Button>
           {loading ? (
@@ -149,7 +139,7 @@ export default function Connection({
         <Button
           disabled={loading}
           className="w-full"
-          onClick={handleGoogleLogin}
+          onClick={handleConnection}
         >
           {loading ? <span>Connecting ...</span> : <span>Connect</span>}
         </Button>

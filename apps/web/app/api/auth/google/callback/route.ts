@@ -62,31 +62,34 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ msg: "not email" })
     }
 
-    await prisma.gmailConnection.upsert({
+    await prisma.connection.upsert({
       where: {
-        userId_email: {
-          userId: session.user.id,
-          email: googleEmail
+        userId: session.user.id,
+        metaData: {
+          path: ["email"],
+          equals: googleEmail,
         }
       },
       update: {
         appType: "Gmail",
-        email: googleEmail,
         accessToken: accessToken,
         refreshToken: refreshToken,
-        tokenType: tokenResponse.tokens.token_type as string,
-        id_token: tokenResponse.tokens.id_token as string,
-        tokenExpiry: tokenResponse.tokens.expiry_date as number,
+        metaData: {
+          tokenType: tokenResponse.tokens.token_type as string,
+          id_token: tokenResponse.tokens.id_token as string,
+        },
+        expiresAt: new Date(tokenResponse.tokens.expiry_date as number)
       },
       create: {
         userId: session.user.id,
         appType: "Gmail",
-        email: googleEmail,
         accessToken: accessToken,
         refreshToken: refreshToken,
-        tokenType: tokenResponse.tokens.token_type as string,
-        id_token: tokenResponse.tokens.id_token as string,
-        tokenExpiry: tokenResponse.tokens.expiry_date as number,
+        metaData: {
+          tokenType: tokenResponse.tokens.token_type as string,
+          id_token: tokenResponse.tokens.id_token as string,
+        },
+        expiresAt: new Date(tokenResponse.tokens.expiry_date as number)
       }
     })
 

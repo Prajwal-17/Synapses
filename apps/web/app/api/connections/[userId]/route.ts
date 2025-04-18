@@ -11,7 +11,7 @@ export async function GET(req: NextRequest,
   try {
     const { userId } = await params;
 
-    const connections = await prisma.gmailConnection.findMany({
+    const connections = await prisma.connection.findMany({
       where: {
         userId: userId,
         appType: "Gmail",
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest,
       id: connection.id,
       userId: connection.userId,
       appType: connection.appType,
-      email: connection.email
+      metaData: connection.metaData
     }))
 
     return NextResponse.json({ msg: "Successfully fetched connections", connections: mappedConnections }, { status: 200 })

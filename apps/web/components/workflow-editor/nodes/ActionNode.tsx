@@ -83,11 +83,11 @@ const ActionNode = ({ id }: ActionNodeProps) => {
               src={`/icons/${nodeData[Number(id)]?.appType ? nodeData[Number(id)]?.appType.toLowerCase() + ".svg" : "zap.svg"}`}
               width={12}
               height={12}
-              alt="Gmail Icon"
+              alt="Action Icons"
             />
             <span className="text-[10px] font-medium text-gray-800 dark:text-gray-200">
-              {nodeData[Number(id) - 1]?.appType
-                ? nodeData[Number(id) - 1]?.appType
+              {nodeData[Number(id)]?.appType
+                ? nodeData[Number(id)]?.appType
                 : "Action"}
             </span>
           </div>

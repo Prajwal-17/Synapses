@@ -16,12 +16,12 @@ model User {
   image         String?
   accounts      Account[]
 
-  workflows        Workflow[]
-  gmailConnections GmailConnection[]
+  workflows  Workflow[]
+  Connection Connection[]
+  Outbox     Outbox[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Outbox    Outbox[]
 }
 
 model Account {
@@ -73,9 +73,10 @@ model Trigger {
   payload      Json
   stepNo       Int
 
-  workflow        Workflow         @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  gmailConnection GmailConnection? @relation(fields: [connectionId], references: [id])
-  createdAt       DateTime         @default(now())
+  workflow   Workflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  connection Connection? @relation(fields: [connectionId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
 enum NodeType {
@@ -93,21 +94,20 @@ model Action {
   payload      Json
   stepNo       Int
 
-  Workflow        Workflow         @relation(fields: [workflowId], references: [id], onDelete: Cascade)
-  gmailConnection GmailConnection? @relation(fields: [connectionId], references: [id])
-  createdAt       DateTime         @default(now())
+  Workflow   Workflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  Connection Connection? @relation(fields: [connectionId], references: [id])
+
+  createdAt DateTime @default(now())
 }
 
-model GmailConnection {
-  id           String @id @default(uuid())
+model Connection {
+  id           String   @id @default(uuid())
   userId       String
   appType      String
-  email        String
   accessToken  String
   refreshToken String
-  tokenType    String
-  id_token     String
-  tokenExpiry  BigInt
+  metaData     Json
+  expiresAt    DateTime
 
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   Trigger Trigger[]
@@ -116,7 +116,7 @@ model GmailConnection {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, email], name: "userId_email")
+  @@unique([userId])
 }
 
 model Outbox {
