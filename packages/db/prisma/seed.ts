@@ -48,6 +48,7 @@ async function main() {
       metaData: {
         "tokenType": "Bearer",
         "id_token": faker.string.uuid(),
+        "email": faker.internet.email(),
         "tokenExpiry": Date.now() + 3600 * 1000,
       },
       expiresAt: new Date()

@@ -1,3 +1,5 @@
+import { DateTime } from "@auth/core/providers/kakao"
+
 export type ApiWorkflowType = {
   id: string,
   userId: string,
@@ -83,14 +85,12 @@ export type EmailPayloadType = {
   body: string,
 }
 
-export type GmailConnectionType = {
+export type ConnectionType = {
   id: string,
   userId: string,
   appType: string,
-  email: string,
-  accessToken?: string,
-  refreshToken?: string,
-  tokenType?: string,
-  id_token?: string,
-  tokenExpiry?: BigInt,
+  accessToken: string,
+  refreshToken: string,
+  metaData: Record<string, any>,
+  expiresAt: DateTime,
 }

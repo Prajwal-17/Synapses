@@ -101,13 +101,13 @@ model Action {
 }
 
 model Connection {
-  id           String   @id @default(uuid())
+  id           String    @id @default(uuid())
   userId       String
   appType      String
   accessToken  String
   refreshToken String
   metaData     Json
-  expiresAt    DateTime
+  expiresAt    DateTime?
 
   user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   Trigger Trigger[]

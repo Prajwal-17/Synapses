@@ -1,9 +1,9 @@
-import { GmailConnectionType } from "@repo/types"
+import { ConnectionType } from "@repo/types"
 import { create } from "zustand"
 
 type ConnectionStoreType = {
-  connections: GmailConnectionType[],
-  setConnections: (connectionArray: GmailConnectionType[]) => void
+  connections: ConnectionType[],
+  setConnections: (connectionArray: ConnectionType[]) => void
 }
 
 export const useConnectionStore = create<ConnectionStoreType>((set) => ({

@@ -9,10 +9,10 @@ import {
 } from "@repo/ui";
 import { useSession } from "next-auth/react";
 import { useConnectionStore } from "@/store/connectionStore";
-import { GmailConnectionType } from "@repo/types";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { Loader2Icon, RefreshCw } from "lucide-react";
 import { handleGoogleLogin, handleNotionLogin } from "@/lib/connectionLib";
+import { ConnectionType } from "@repo/types";
 
 export default function Connection({
   connectionId,
@@ -27,10 +27,11 @@ export default function Connection({
   const connections = useConnectionStore((state) => state.connections);
   const setConnections = useConnectionStore((state) => state.setConnections);
   const [selectedConnection, setSelectedConnections] =
-    useState<GmailConnectionType | null>(null);
+    useState<ConnectionType | null>(null);
   const updateNodeData = useWorkflowStore((state) => state.updateNodeData);
   const [loading, setLoading] = useState(false);
 
+  // Integrate a new account
   const handleConnection = () => {
     appType === "Gmail" && handleGoogleLogin();
     appType === "Notion" && handleNotionLogin();
@@ -87,9 +88,14 @@ export default function Connection({
     }
   };
 
+  useEffect(() => {
+    console.log(selectedConnection);
+    console.log("filtered connections ", filteredConnections);
+  }, [selectedConnection]);
+
   const handleSelectChange = (value: string) => {
     const selected = connections.find(
-      (connection) => connection.email === value,
+      (connection) => connection.metaData.email === value,
     );
     if (selected) {
       setSelectedConnections(selected);
@@ -103,7 +109,7 @@ export default function Connection({
         <div className="flex w-full items-center justify-between gap-2">
           <Select
             disabled={loading}
-            value={selectedConnection?.email || ""}
+            value={selectedConnection?.metaData.email || ""}
             onValueChange={(value) => handleSelectChange(value)}
           >
             <SelectTrigger className="w-full">
@@ -111,9 +117,9 @@ export default function Connection({
             </SelectTrigger>
 
             <SelectContent>
-              {filteredConnections.map((item: GmailConnectionType, index) => (
-                <SelectItem key={index} value={item.email}>
-                  {item.email}
+              {filteredConnections.map((item: ConnectionType, index) => (
+                <SelectItem key={index} value={item.metaData.email}>
+                  {item.metaData.email}
                 </SelectItem>
               ))}
             </SelectContent>

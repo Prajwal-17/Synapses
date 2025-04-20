@@ -75,6 +75,7 @@ export async function GET(request: NextRequest) {
         accessToken: accessToken,
         refreshToken: refreshToken,
         metaData: {
+          email: googleEmail,
           tokenType: tokenResponse.tokens.token_type as string,
           id_token: tokenResponse.tokens.id_token as string,
         },
@@ -86,6 +87,7 @@ export async function GET(request: NextRequest) {
         accessToken: accessToken,
         refreshToken: refreshToken,
         metaData: {
+          email: googleEmail,
           tokenType: tokenResponse.tokens.token_type as string,
           id_token: tokenResponse.tokens.id_token as string,
         },

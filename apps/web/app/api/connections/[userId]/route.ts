@@ -14,7 +14,6 @@ export async function GET(req: NextRequest,
     const connections = await prisma.connection.findMany({
       where: {
         userId: userId,
-        appType: "Gmail",
       },
     })
 

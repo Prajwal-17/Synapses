@@ -5,7 +5,7 @@ export async function getTokenFromDB(appType: string, connectionId: string) {
   try {
 
     if (appType === "gmail") {
-      const response = await prisma.gmailConnection.findFirst({
+      const response = await prisma.connection.findFirst({
         where: {
           id: connectionId
         }
@@ -19,7 +19,7 @@ export async function getTokenFromDB(appType: string, connectionId: string) {
 
 export async function updateAccessToken(connectionId: string, access_token: string) {
   try {
-    await prisma.gmailConnection.update({
+    await prisma.connection.update({
       where: {
         id: connectionId
       },
