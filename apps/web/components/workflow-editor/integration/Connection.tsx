@@ -11,7 +11,11 @@ import { useSession } from "next-auth/react";
 import { useConnectionStore } from "@/store/connectionStore";
 import { useWorkflowStore } from "@/store/workflowStore";
 import { Loader2Icon, RefreshCw } from "lucide-react";
-import { handleGoogleLogin, handleNotionLogin } from "@/lib/connectionLib";
+import {
+  handleDiscordLogin,
+  handleGoogleLogin,
+  handleNotionLogin,
+} from "@/lib/connectionLib";
 import { ConnectionType } from "@repo/types";
 
 export default function Connection({
@@ -35,6 +39,7 @@ export default function Connection({
   const handleConnection = () => {
     appType === "Gmail" && handleGoogleLogin();
     appType === "Notion" && handleNotionLogin();
+    appType === "Discord" && handleDiscordLogin();
   };
 
   useEffect(() => {

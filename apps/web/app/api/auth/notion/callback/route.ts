@@ -45,44 +45,55 @@ export async function GET(request: NextRequest) {
     if (!response.ok) {
       return NextResponse.json({ msg: "Auth token error" }, { status: 400 })
     }
-    console.log(session)
 
-    await prisma.connection.upsert({
+    const existingConnection = await prisma.connection.findFirst({
       where: {
         userId: session.user.id,
+        appType: "Notion",
         metaData: {
           path: ["workspace_id"],
           equals: data.workspace_id,
-        }
-      },
-      update: {
-        appType: "Notion",
-        accessToken: data.access_token,
-        refreshToken: "sfsf",
-        metaData: {
-          workspace_id: data.workspace_id,
-          workspace_name: data.workspace_name,
-          token_type: data.token_type,
-          name: data.owner.name,
-          request_id: data.request_id
         },
-        expiresAt: null,
       },
-      create: {
-        userId: session.user.id,
-        appType: "Notion",
-        accessToken: data.access_token,
-        refreshToken: "sldfsdf",
-        metaData: {
-          workspace_id: data.workspace_id,
-          workspace_name: data.workspace_name,
-          token_type: data.token_type,
-          name: data.owner.name,
-          request_id: data.request_id
+    });
+
+    if (existingConnection) {
+      await prisma.connection.update({
+        where: {
+          id: existingConnection.id,
         },
-        expiresAt: null,
-      }
-    })
+        data: {
+          appType: "Notion",
+          accessToken: data.access_token,
+          refreshToken: "",
+          metaData: {
+            workspace_id: data.workspace_id,
+            workspace_name: data.workspace_name,
+            token_type: data.token_type,
+            name: data.owner.name,
+            request_id: data.request_id,
+          },
+          expiresAt: null,
+        },
+      });
+    } else {
+      await prisma.connection.create({
+        data: {
+          userId: session.user.id,
+          appType: "Notion",
+          accessToken: data.access_token,
+          refreshToken: "sldfsdf",
+          metaData: {
+            workspace_id: data.workspace_id,
+            workspace_name: data.workspace_name,
+            token_type: data.token_type,
+            name: data.owner.name,
+            request_id: data.request_id,
+          },
+          expiresAt: null,
+        },
+      });
+    }
 
     if (isPopup) {
       const html = `

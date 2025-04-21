@@ -7,7 +7,6 @@ export const handleGoogleLogin = () => {
   // Use 'state' to indicate it's a popup flow
   const state = encodeURIComponent(JSON.stringify({ popup: true }));
 
-  //
   const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=code&access_type=offline&prompt=consent&state=${state}`;
 
   //to open a popup window
@@ -17,9 +16,22 @@ export const handleGoogleLogin = () => {
 export const handleNotionLogin = () => {
 
   const NEXT_PUBLIC_NOTION_AUTHORIZATION_URL = process.env.NEXT_PUBLIC_NOTION_AUTHORIZATION_URL;
+  const NOTION_OAUTH_CLIENT_ID = process.env.NOTION_OAUTH_CLIENT_ID;
   const state = encodeURIComponent(JSON.stringify({ popup: true }))
+  const redirectUri = `${window.location.origin}/api/auth/notion/callback`
 
-  const notionAuthUrl = `${NEXT_PUBLIC_NOTION_AUTHORIZATION_URL}&state=${state}`
+  const notionAuthUrl = `https://api.notion.com/v1/oauth/authorize?client_id=${NOTION_OAUTH_CLIENT_ID}&response_type=code&owner=user&redirect_uri=${redirectUri}&state=${state}`
 
   window.open(notionAuthUrl, "Notion OAuth", "height=600,width=800")
 };
+
+export const handleDiscordLogin = () => {
+  const DISCORD_CLIENT_ID = process.env.NEXT_PUBLIC_DISCORD_CLIENT_ID;
+  const scope = 'identify+email'
+
+  const redirect_uri = encodeURIComponent(`${window.location.origin}/api/auth/discord/callback`)
+
+  const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${redirect_uri}&scope=${scope}`
+
+  window.open(discordAuthUrl, "Discord OAuth", "height=600,width=800")
+}

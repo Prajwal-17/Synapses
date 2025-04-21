@@ -77,5 +77,29 @@ export const integrations = [
         description: "",
       }
     ]
+  },
+  {
+    integrationId: 4,
+    appValue: "Discord",
+    appLabel: "Discord",
+    image: "/icons/discord.svg",
+    trigger: [
+      {
+        eventId: 1,
+        eventValue: "random",
+        eventLabel: "random",
+        type: "trigger",
+        description: "",
+      },
+    ],
+    actions: [
+      {
+        eventId: 1,
+        eventValue: "random",
+        eventLabel: "random",
+        type: "trigger",
+        description: "",
+      }
+    ]
   }
 ]

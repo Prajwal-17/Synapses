@@ -62,38 +62,49 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ msg: "not email" })
     }
 
-    await prisma.connection.upsert({
+    const existingConnection = await prisma.connection.findFirst({
       where: {
         userId: session.user.id,
+        appType: "Gmail",
         metaData: {
           path: ["email"],
           equals: googleEmail,
-        }
-      },
-      update: {
-        appType: "Gmail",
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        metaData: {
-          email: googleEmail,
-          tokenType: tokenResponse.tokens.token_type as string,
-          id_token: tokenResponse.tokens.id_token as string,
         },
-        expiresAt: new Date(tokenResponse.tokens.expiry_date as number)
       },
-      create: {
-        userId: session.user.id,
-        appType: "Gmail",
-        accessToken: accessToken,
-        refreshToken: refreshToken,
-        metaData: {
-          email: googleEmail,
-          tokenType: tokenResponse.tokens.token_type as string,
-          id_token: tokenResponse.tokens.id_token as string,
+    });
+
+    if (existingConnection) {
+      await prisma.connection.update({
+        where: {
+          id: existingConnection.id,
         },
-        expiresAt: new Date(tokenResponse.tokens.expiry_date as number)
-      }
-    })
+        data: {
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          metaData: {
+            email: googleEmail,
+            tokenType: tokenResponse.tokens.token_type as string,
+            id_token: tokenResponse.tokens.id_token as string,
+          },
+          expiresAt: new Date(tokenResponse.tokens.expiry_date as number),
+        },
+      });
+    } else {
+      await prisma.connection.create({
+        data: {
+          userId: session.user.id,
+          appType: "Gmail",
+          accessToken: accessToken,
+          refreshToken: refreshToken,
+          metaData: {
+            email: googleEmail,
+            tokenType: tokenResponse.tokens.token_type as string,
+            id_token: tokenResponse.tokens.id_token as string,
+          },
+          expiresAt: new Date(tokenResponse.tokens.expiry_date as number),
+        },
+      });
+    }
 
     /**
      * if popup is open then we are sending a html page which sends a success message and closes the popup window
