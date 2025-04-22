@@ -93,11 +93,6 @@ export default function Connection({
     }
   };
 
-  useEffect(() => {
-    console.log(selectedConnection);
-    console.log("filtered connections ", filteredConnections);
-  }, [selectedConnection]);
-
   const handleSelectChange = (value: string) => {
     const selected = connections.find(
       (connection) => connection.metaData.email === value,

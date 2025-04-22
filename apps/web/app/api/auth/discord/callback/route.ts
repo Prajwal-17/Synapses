@@ -50,7 +50,20 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Discord OAuth failed", success: false }, { status: 400 });
     }
 
-    const discordUserData = await getDiscordUserInfo(data.access_token);
+    const discordUserResponse = await fetch('https://discord.com/api/v10/users/@me', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${data.access_token}`,
+      },
+    });
+
+    if (!discordUserResponse.ok) {
+      // throw new Error('Failed to fetch user data from Discord');
+      return NextResponse.json({ error: "Discord OAuth failed", success: false }, { status: 400 });
+
+    }
+
+    const discordUserData = await discordUserResponse.json();
     const discordId = discordUserData.id;
 
     const existingConnection = await prisma.connection.findFirst({
@@ -101,7 +114,7 @@ export async function GET(request: NextRequest) {
             <script>
               window.onload = function() {
                 if (window.opener) {
-                  window.opener.postMessage({ type: 'NOTION_AUTH_SUCCESS' }, '*');
+                  window.opener.postMessage({ type: 'DISCORD_AUTH_SUCCESS' }, '*');
                   window.close();
                 }
               };
@@ -123,20 +136,4 @@ export async function GET(request: NextRequest) {
     console.error('Error during Discord connection flow:', error);
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 });
   }
-}
-
-async function getDiscordUserInfo(accessToken: string) {
-  const response = await fetch('https://discord.com/api/v10/users/@me', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch user data from Discord');
-  }
-
-  const userData = await response.json();
-  return userData;
 }
