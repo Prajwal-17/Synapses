@@ -94,3 +94,8 @@ export type ConnectionType = {
   metaData: Record<string, any>,
   expiresAt: DateTime,
 }
+export type UpdateOutboxAndLogsType = {
+  task: TaskType,
+  status: string,
+  message: string
+}
