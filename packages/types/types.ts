@@ -1,4 +1,5 @@
 import { DateTime } from "@auth/core/providers/kakao"
+import { Gmail_Send_Mail_Type, Notion_Add_Comment_Type, Notion_Create_Page_Type } from "./payloadTypes"
 
 export type ApiWorkflowType = {
   id: string,
@@ -74,15 +75,11 @@ export type TaskType = {
   appType: string,
   connectionId: string,
   eventType: string,
-  payload: EmailPayloadType
+  payload:
+  Gmail_Send_Mail_Type
+  | Notion_Create_Page_Type
+  | Notion_Add_Comment_Type,
   status: string
-}
-
-export type EmailPayloadType = {
-  to: string,
-  from: string,
-  subject: string,
-  body: string,
 }
 
 export type ConnectionType = {

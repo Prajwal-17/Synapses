@@ -3,6 +3,8 @@ import dotenv from "dotenv"
 import { sendEmail } from "./gmailActions/sendEmail";
 import { TaskType } from "@repo/types";
 import { draftEmail } from "./gmailActions/draftEmail";
+import { createPage } from "./notionActions/createPage";
+import { addComment } from "./notionActions/addComment";
 
 dotenv.config()
 
@@ -49,6 +51,8 @@ async function handleTask(task: TaskType) {
 const eventHandlers: Record<string, (task: TaskType) => Promise<void>> = {
   SEND_EMAIL: sendEmail,
   DRAFT_EMAIL: draftEmail,
+  CREATE_PAGE: createPage,
+  ADD_COMMENT: addComment
 };
 
 main()

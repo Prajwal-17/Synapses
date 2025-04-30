@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
           userId: session.user.id,
           appType: "Notion",
           accessToken: data.access_token,
-          refreshToken: "sldfsdf",
+          refreshToken: "",
           metaData: {
             workspace_id: data.workspace_id,
             workspace_name: data.workspace_name,

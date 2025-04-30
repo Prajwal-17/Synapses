@@ -14,7 +14,7 @@ export const handleGoogleLogin = () => {
 };
 
 export const handleNotionLogin = () => {
-  const NOTION_OAUTH_CLIENT_ID = process.env.NOTION_OAUTH_CLIENT_ID;
+  const NOTION_OAUTH_CLIENT_ID = process.env.NEXT_PUBLIC_NOTION_OAUTH_CLIENT_ID;
   const state = encodeURIComponent(JSON.stringify({ popup: true }))
   const redirectUri = `${window.location.origin}/api/auth/notion/callback`
 

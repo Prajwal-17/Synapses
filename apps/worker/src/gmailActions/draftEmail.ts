@@ -1,5 +1,4 @@
-import { EmailPayloadType, TaskType } from "@repo/types";
-import { prisma } from "../db";
+import { Gmail_Send_Mail_Type, TaskType } from "@repo/types";
 import { getTokenFromDB } from "../tokenFncs";
 import { google } from "googleapis";
 import { updateOutboxAndLogs } from "../updateOutboxAndLogs";
@@ -7,6 +6,7 @@ import { updateOutboxAndLogs } from "../updateOutboxAndLogs";
 export async function draftEmail(task: TaskType) {
   try {
     const connectionDetails = await getTokenFromDB(task.appType, task.connectionId)
+    const payload = task.payload as Gmail_Send_Mail_Type;
 
     const oauth2client = new google.auth.OAuth2(
       process.env.GMAIL_CLIENT_ID,
@@ -20,7 +20,7 @@ export async function draftEmail(task: TaskType) {
 
     const gmail = google.gmail({ version: "v1", auth: oauth2client })
 
-    const createEmail = ({ to, from, subject, body }: EmailPayloadType) => {
+    const createEmail = ({ to, from, subject, body }: Gmail_Send_Mail_Type) => {
       const email = [
         `To: ${to}`,
         `From: ${from}`,
@@ -39,10 +39,10 @@ export async function draftEmail(task: TaskType) {
     }
 
     const draftEmail = createEmail({
-      to: `${task.payload.to}`,
-      from: `${task.payload.from}`,
-      subject: `${task.payload.subject}`,
-      body: `${task.payload.body}`,
+      to: `${payload.to}`,
+      from: `${payload.from}`,
+      subject: `${payload.subject}`,
+      body: `${payload.body}`,
     })
 
     const response = await gmail.users.drafts.create({
