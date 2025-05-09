@@ -1,6 +1,6 @@
 "use client"
 
-import { Separator } from "@repo/ui/components/separator"
+import { Separator } from "@repo/ui"
 import { Menu, MoonStar, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import Link from "next/link"
@@ -13,6 +13,7 @@ export const Navbar = () => {
   const { theme, setTheme } = useTheme()
   const toggleSidebar = useSidebarStore((state) => state.toggleSidebar)
   const pathname = usePathname();
+  const showMenu = !["/auth/login", "/auth/sign-up"].includes(pathname)
 
   return (
     <>
@@ -21,13 +22,12 @@ export const Navbar = () => {
 
           <div className="flex items-center">
             {
-              pathname !== "/" &&
-              <button onClick={toggleSidebar} className="text-center hover:cursor-pointer">
+              showMenu && <div onClick={toggleSidebar} className="text-center hover:cursor-pointer">
                 <Menu />
-              </button>
+              </div>
             }
             <Link href="/" className="text-2xl md:text-3xl  font-bold mx-6 hover:cursor-pointer">
-              HyperPipe
+              Synapses
             </Link>
           </div>
 

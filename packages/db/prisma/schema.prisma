@@ -16,8 +16,9 @@ model User {
   image         String?
   accounts      Account[]
 
-  workflows       Workflow[]
-  gmailConnection GmailConnection?
+  workflows  Workflow[]
+  Connection Connection[]
+  Outbox     Outbox[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -49,23 +50,33 @@ model Workflow {
   id               String   @id @default(uuid())
   userId           String
   totalActionSteps Int
-  triggerId        String?  @unique
   actions          Action[]
+  name             String
+  status           Boolean  @default(false)
 
   Trigger Trigger?
-  user    User     @relation(fields: [userId], references: [id])
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
+  lastCheckedAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  Outbox        Outbox[]
+  Logs          Logs[]
 }
 
 model Trigger {
-  id         String   @id @default(uuid())
-  workflowId String   @unique
-  appType    String
-  type       NodeType @default(trigger)
-  config     Json
+  id           String   @id @default(uuid())
+  workflowId   String   @unique
+  appType      String
+  connectionId String?
+  type         NodeType @default(trigger)
+  eventType    String
+  payload      Json
+  stepNo       Int
 
-  workflow  Workflow @relation(fields: [workflowId], references: [id])
+  workflow   Workflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  connection Connection? @relation(fields: [connectionId], references: [id])
+
   createdAt DateTime @default(now())
 }
 
@@ -75,32 +86,70 @@ enum NodeType {
 }
 
 model Action {
-  id         String   @id @default(uuid())
-  // triggerId  String
-  workflowId String
-  appType    String
-  type       NodeType @default(action)
-  config     Json
-  stepNo     Int
+  id           String   @id @default(uuid())
+  workflowId   String
+  appType      String
+  connectionId String?
+  type         NodeType @default(action)
+  eventType    String
+  payload      Json
+  stepNo       Int
 
-  // trigger  Trigger   @relation(fields: [triggerId], references: [id])
-  Workflow Workflow? @relation(fields: [workflowId], references: [id])
+  Workflow   Workflow    @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  Connection Connection? @relation(fields: [connectionId], references: [id])
 
   createdAt DateTime @default(now())
 }
 
-model GmailConnection {
-  id           String @id @default(uuid())
-  userId       String @unique
-  gmail        String
+model Connection {
+  id           String    @id @default(uuid())
+  userId       String
+  appType      String
   accessToken  String
   refreshToken String
-  tokenType    String
-  id_token     String
-  tokenExpiry  BigInt
+  metaData     Json
+  expiresAt    DateTime?
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Trigger Trigger[]
+  Action  Action[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Logs      Logs[]
+}
 
-  user User @relation(fields: [userId], references: [id])
+model Outbox {
+  id           String @id @default(uuid())
+  userId       String
+  workflowId   String
+  appType      String
+  connectionId String
+  eventType    String
+  payload      Json
+  stepNo       Int
+  status       String @default("pending")
+
+  createdAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workflow Workflow @relation(fields: [workflowId], references: [id])
+
+  @@index([status])
+}
+
+model Logs {
+  id           String @id @default(uuid())
+  workflowId   String
+  stepNo       Int
+  appType      String
+  eventType    String
+  connectionId String
+  message      String
+  status       String
+
+  workflow   Workflow   @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+  connection Connection @relation(fields: [connectionId], references: [id])
+
+  createdAt DateTime @default(now())
 }

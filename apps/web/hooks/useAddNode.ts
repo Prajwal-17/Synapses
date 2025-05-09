@@ -1,11 +1,11 @@
 import { useReactFlow } from "@xyflow/react";
-import { usePanelDetails } from "@/store/panelDetailsStore";
 import { useSelectNodeStore } from "@/store/selectNodeStore";
+import { useWorkflowStore } from "@/store/workflowStore";
 
 export const useAddNode = () => {
 
   const { setNodes, setEdges, getNodes } = useReactFlow();
-  const setNodeData = usePanelDetails((state) => state.setNodeData)
+  const addNode = useWorkflowStore((state) => state.addNode)
   const setSelectedNode = useSelectNodeStore((state) => state.setSelectedNode)
   const setShowPanel = useSelectNodeStore((state) => state.setShowPanel)
   const showPanel = useSelectNodeStore((state) => state.showPanel);
@@ -18,21 +18,21 @@ export const useAddNode = () => {
       return [
         ...nodes,
         {
-          id: `${nodes.length + 1}`,
+          id: `${nodes.length}`,
           position: {
             x: 0,
-            y: nodes[nodes.length - 1].position.y + 100
+            y: nodes.length * 100,
           },
           data: {
-            label: 'Placeholder Node'
+            label: 'Action Node'
           },
           type: "actionNode"
         },
         {
-          id: `${nodes.length + 2}`,
+          id: `${nodes.length + 1}`,
           position: {
             x: 0,
-            y: nodes[nodes.length - 1].position.y + 200,
+            y: nodes.length * 100 + 100,
           },
           data: {
             label: 'Placeholder Node'
@@ -42,22 +42,20 @@ export const useAddNode = () => {
       ]
     })
 
-
     setEdges((edges) => {
       const currNode = getNodes();
       const lastActionNode = currNode[currNode.length - 2];
-      console.log("lastaction", lastActionNode)
       return [
         ...edges,
         {
-          id: `e${Number(lastActionNode.id) + 1}-${Number(lastActionNode.id) + 2}`,
-          source: `${lastActionNode.id}`,
-          target: `${Number(lastActionNode.id) + 1}`
+          id: `e${Number(lastActionNode?.id)}-${Number(lastActionNode?.id) + 1}`,
+          source: `${lastActionNode?.id}`,
+          target: `${Number(lastActionNode?.id) + 1}`
         }
       ]
     });
 
-    setNodeData()
+    addNode()
     setSelectedNode(getNodes().length)
 
     if (!showPanel) {

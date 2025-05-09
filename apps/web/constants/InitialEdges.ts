@@ -1,3 +1,3 @@
 export const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' }
+  { id: 'e0-1', source: '0', target: '1' }
 ];

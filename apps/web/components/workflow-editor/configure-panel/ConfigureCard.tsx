@@ -1,43 +1,42 @@
-"use client"
+"use client";
 
-import {
-  CardContent,
-} from "@repo/ui/components/card";
-import { NodeData } from "@/store/panelDetailsStore";
+import { CardContent } from "@repo/ui";
+import { NodeDataType } from "@repo/types";
 import SendEmail from "./gmail/SendEmail";
 import ListenEmail from "./gmail/ListenEmail";
 import Commit from "./github/Commit";
 import Pullrequest from "./github/Pullrequest";
 
-const ConfigureData = ({ currData }: { currData: NodeData }) => {
-
+const ConfigureCard = ({ currNode }: { currNode: NodeDataType }) => {
   const renderConfigureComponent = (selectedEvent: string) => {
     switch (selectedEvent) {
-      case "Listen-email":
-        return <ListenEmail />;
+      case "LISTEN_EMAIL":
+        return <ListenEmail currNode={currNode} />;
 
-      case "Send-email":
-        return <SendEmail currData={currData} />;
+      case "SEND_EMAIL":
+        return <SendEmail currNode={currNode} />;
 
-      case "Commit":
+      case "DRAFT_EMAIL":
+        return <SendEmail currNode={currNode} />;
+
+      case "COMMIT":
         return <Commit />;
 
-      case "Pull-request":
+      case "PULL_REQUEST":
         return <Pullrequest />;
 
       default:
         break;
     }
-  }
+  };
 
-  return (<>
+  return (
+    <>
+      <CardContent className="h-[330px] flex-col items-start justify-center overflow-auto p-1">
+        {currNode.eventType && renderConfigureComponent(currNode.eventType)}
+      </CardContent>
+    </>
+  );
+};
 
-    <CardContent className="h-[330px] flex flex-col justify-evenly overflow-auto">
-
-      {currData.event && renderConfigureComponent(currData.event)}
-
-    </CardContent>
-  </>)
-}
-
-export default ConfigureData
+export default ConfigureCard;

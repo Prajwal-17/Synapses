@@ -1,18 +1,17 @@
 import { prisma } from "@repo/db/prisma";
-import { NodeData, NodeType } from "@/store/panelDetailsStore";
+import { ActionType, ApiWorkflowType, TriggerType } from "@repo/types";
 import { NextRequest, NextResponse } from "next/server";
 
 //Get Full Data of a workflow
 export async function GET(
   req: NextRequest,
   { params }: {
-    params: {
+    params: Promise<{
       userId: string,
       workflowId: string,
-    }
+    }>
   }
 ) {
-
   try {
     const { userId, workflowId } = await params;
 
@@ -39,65 +38,28 @@ export async function GET(
     if (!workflow) {
       return NextResponse.json({ msg: "Workflow does not exist" }, { status: 400 })
     }
-
-    const nodeData: NodeData[] = []
-
-    nodeData.push({
-      stepNo: 1,
-      //@ts-ignore
-      nodeId: workflow.triggerId,
-      //@ts-ignore
-      app: workflow.Trigger?.appType,
-      account: "",
-      //@ts-ignore
-      type: workflow.Trigger?.type,
-      event: "",
-      //@ts-ignore
-      config: workflow.Trigger?.config,
-    });
-
-    workflow.actions.map((item) => {
-      nodeData.push(
-
-        {
-          stepNo: item.stepNo,
-          nodeId: item.id,
-          app: item.appType,
-          account: "",
-          type: NodeType.action,
-          event: "",
-          config: item.config as Record<string, any>,
-        }
-      )
-    })
-
-    console.log(nodeData)
-    // workflow.actions.map((item) => {
-    //   console.log(item.config.to)
-    // })
-
-
-    return NextResponse.json({ msg: "Successfully fetched workflow details", nodeData }, { status: 200 })
+    return NextResponse.json({ msg: "Successfully fetched workflow details", workflow }, { status: 200 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 })
   }
 }
 
-//Update data of a workflow
+// Update/save data of a workflow
 export async function POST(
-  req: NextResponse,
+  req: NextRequest,
   { params }: {
-    params: {
+    params: Promise<{
       userId: string,
       workflowId: string,
-    }
+    }>
   }
 ) {
-
   try {
     const { userId, workflowId } = await params;
-    const body = await req.json();
+    const body: ApiWorkflowType = await req.json();
+    const trigger: TriggerType = body.Trigger;
+    const actions: ActionType[] = body.actions;
 
     const user = await prisma.user.findUnique({
       where: {
@@ -112,66 +74,76 @@ export async function POST(
     const workflow = await prisma.workflow.findUnique({
       where: {
         id: workflowId,
+      },
+      include: {
+        actions: true
       }
-    })
+    });
 
     if (!workflow) {
       return NextResponse.json({ msg: "Workflow does not exist or does not belong to the user" }, { status: 400 })
-    }
+    };
 
-    const triggers = [];
-    const actions = [];
+    // pass prisma client in the async arrow function 
+    const updatedWorkflow = await prisma.$transaction(async (prisma) => {
+      await prisma.workflow.update({
+        where: {
+          id: workflow.id
+        },
+        data: {
+          totalActionSteps: workflow.actions.length,
+        }
+      })
 
-    for (const step of body as NodeData[]) {
-      if (step.type === "trigger") {
-        triggers.push({
+      if (trigger && trigger.appType !== "") {
+        await prisma.trigger.update({
           where: {
-            id: step.nodeId,
+            id: body.Trigger.id,
           },
-          update: {
-            workflowId: workflow.id,
-            appType: step.app,
-            type: step.type,
-            config: step.config,
-          },
-          create: {
-            id: step.nodeId,
-            workflowId: workflow.id,
-            appType: step.app,
-            type: step.type,
-            config: step.config,
-          }
-        })
-      } else if (step.type === "action") {
-        actions.push({
-          where: {
-            id: step.nodeId,
-          },
-          update: {
-            workflowId: workflowId,
-            appType: step.app,
-            type: step.type,
-            config: step.config,
-            stepNo: step.stepNo,
-          },
-          create: {
-            id: step.nodeId,
-            workflowId: workflowId,
-            appType: step.app,
-            type: step.type,
-            config: step.config,
-            stepNo: step.stepNo,
+          data: {
+            workflowId: trigger.workflowId,
+            appType: trigger.appType,
+            connectionId: trigger.connectionId,
+            type: "trigger",
+            eventType: trigger.eventType,
+            payload: trigger.payload,
+            stepNo: trigger.stepNo
           }
         })
       }
-    }
 
-    const updatedData = await prisma.$transaction([
-      ...triggers.map((t) => prisma.trigger.upsert(t)),
-      ...actions.map((a) => prisma.action.upsert(a))
-    ])
+      if (actions && actions.length > 0) {
+        await Promise.all(
+          actions.map((item) =>
+            prisma.action.upsert({
+              where: {
+                id: item.id
+              },
+              update: {
+                workflowId: workflow.id,
+                appType: item.appType,
+                connectionId: item.connectionId,
+                type: "action",
+                eventType: item.eventType,
+                payload: item.payload,
+                stepNo: item.stepNo
+              },
+              create: {
+                workflowId: workflow.id,
+                appType: item.appType,
+                connectionId: item.connectionId,
+                type: "action",
+                eventType: item.eventType,
+                payload: item.payload,
+                stepNo: item.stepNo
+              }
+            })
+          )
+        )
+      }
+    })
 
-    return NextResponse.json({ msg: "Successfully updated", updatedData }, { status: 200 })
+    return NextResponse.json({ msg: "Successfully updated", updatedWorkflow: updatedWorkflow }, { status: 200 })
   } catch (error) {
     console.log(error)
     return NextResponse.json({ msg: "Something went wrong" }, { status: 400 })

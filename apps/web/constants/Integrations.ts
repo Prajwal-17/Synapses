@@ -4,20 +4,29 @@ export const integrations = [
     appValue: "Gmail",
     appLabel: "Gmail",
     image: "/icons/gmail.svg",
-    actions: [
+    trigger: [
       {
         eventId: 1,
-        eventValue: "Listen-email",
-        eventLabel: "Listen Email",
+        eventValue: "LISTEN_EMAIL",
+        eventLabel: "Listen Emails",
         type: "trigger",
         description: "Triggers to new emails",
       },
+    ],
+    actions: [
+      {
+        eventId: 1,
+        eventValue: "SEND_EMAIL",
+        eventLabel: "Send Email",
+        type: "action",
+        description: "Create and send an email",
+      },
       {
         eventId: 2,
-        eventValue: "Send-email",
-        eventLabel: "Send Email",
-        type: "trigger",
-        description: "Create and send an email",
+        eventValue: "DRAFT_EMAIL",
+        eventLabel: "Draft Email",
+        type: "action",
+        description: "Create a draft email",
       }
     ]
   },
@@ -26,17 +35,19 @@ export const integrations = [
     appValue: "Github",
     appLabel: "Github",
     image: "/icons/github.svg",
+    trigger: [
+      {
+        eventId: 1,
+        eventValue: "COMMIT",
+        eventLabel: "Commit",
+        type: "trigger",
+        description: "some desc",
+      }
+    ],
     actions: [
       {
         eventId: 1,
-        eventValue: "Commit",
-        eventLabel: "Commit",
-        type: "action",
-        description: "some desc",
-      },
-      {
-        eventId: 2,
-        eventValue: "Pull-request",
+        eventValue: "PULL_REQUEST",
         eventLabel: "Pull request",
         type: "action",
         description: "random data pull requstt lsdkflsajdfsfd",
@@ -48,7 +59,7 @@ export const integrations = [
     appValue: "Notion",
     appLabel: "Notion",
     image: "/icons/notion.svg",
-    actions: [
+    trigger: [
       {
         eventId: 1,
         eventValue: "random",
@@ -56,8 +67,34 @@ export const integrations = [
         type: "trigger",
         description: "",
       },
+    ],
+    actions: [
       {
-        eventId: 2,
+        eventId: 1,
+        eventValue: "random",
+        eventLabel: "random",
+        type: "trigger",
+        description: "",
+      }
+    ]
+  },
+  {
+    integrationId: 4,
+    appValue: "Discord",
+    appLabel: "Discord",
+    image: "/icons/discord.svg",
+    trigger: [
+      {
+        eventId: 1,
+        eventValue: "random",
+        eventLabel: "random",
+        type: "trigger",
+        description: "",
+      },
+    ],
+    actions: [
+      {
+        eventId: 1,
         eventValue: "random",
         eventLabel: "random",
         type: "trigger",
